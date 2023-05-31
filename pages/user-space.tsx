@@ -1,19 +1,22 @@
-import { startTransition, useEffect, useState } from "react"
-import { Outlet, useLocation } from "react-router"
-import { Link, NavLink } from "react-router-dom"
+import {startTransition, useEffect, useState} from "react"
+import {Outlet, useLocation, useNavigate} from "react-router"
+import {Link, NavLink} from "react-router-dom"
 
-import { Icons } from "@/components/icons"
+import {Icons} from "@/components/icons"
+import {Separator} from "@/components/ui/separator";
+import {Button} from "@/components/ui/button";
+import {LogOutIcon} from "lucide-react";
 
 const menuItems = [
-  { name: "我的简历", icon: Icons.resume, route: "/space" },
-  { name: "简历模版", icon: Icons.template, route: "/space/templates" },
-  { name: "履历库", icon: Icons.db, route: "/space/db" },
+  {name: "我的简历", icon: Icons.resume, route: "/space"},
+  {name: "简历模版", icon: Icons.template, route: "/space/templates"},
+  {name: "履历库", icon: Icons.db, route: "/space/db"},
 ]
 export const UserSpace = () => {
   const [selectedItem, setSelectedItem] = useState(1)
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
 
-  const { pathname } = useLocation()
+  const {pathname, state} = useLocation()
 
   useEffect(() => {
     startTransition(() => {
@@ -27,6 +30,7 @@ export const UserSpace = () => {
     setSidebarCollapsed(!sidebarCollapsed)
   }
 
+  const navigate = useNavigate()
   return (
     <div className="max-h-screen h-screen max-w-screen flex">
       <div
@@ -34,9 +38,11 @@ export const UserSpace = () => {
           sidebarCollapsed ? "w-16" : "w-64"
         } bg-blue-500 text-white flex flex-col transition-width duration-300`}
       >
-        <div className="p-4">
-          <Icons.laptop className="w-32 h-8" />
+        <div className="p-4 flex flex-row items-center">
+          <Icons.laptop className="w-12 h-8 "/>
+          简历空间
         </div>
+        <Separator/>
         <div className="flex-grow">
           <ul className="space-y-2 p-4">
             {menuItems.map((item, index) => {
@@ -52,7 +58,7 @@ export const UserSpace = () => {
                   } p-2 flex items-center space-x-4 rounded`}
                 >
                   <NavLink to={item.route}>
-                    <IconComponent className="w-6 h-6" />
+                    <IconComponent className="w-6 h-6"/>
                     {!sidebarCollapsed && <span>{item.name}</span>}
                   </NavLink>
                 </li>
@@ -62,10 +68,11 @@ export const UserSpace = () => {
         </div>
         <div className="p-4 flex items-center">
           {!sidebarCollapsed && (
-            <div>
-              <div className="text-lg font-bold mb-2">test</div>
-              <div className="text-sm">xxxx@mail.com</div>
-            </div>
+            <>
+              <div className="text-lg font-bold mb-2">{localStorage.getItem("user-name")}</div>
+              <Button variant="ghost" className="ml-3" onClick={() => navigate("/")}><LogOutIcon size={20}/></Button>
+              {/*<div className="text-sm">xxxx@mail.com</div>*/}
+            </>
           )}
           <div className="ml-auto">
             <button
@@ -73,16 +80,16 @@ export const UserSpace = () => {
               className="p-2 bg-blue-400 text-white rounded"
             >
               {sidebarCollapsed ? (
-                <Icons.sideClose className="w-6 h-6" />
+                <Icons.sideClose className="w-6 h-6"/>
               ) : (
-                <Icons.sideOpen className="w-6 h-6" />
+                <Icons.sideOpen className="w-6 h-6"/>
               )}
             </button>
           </div>
         </div>
       </div>
       <div className="flex-1 max-h-screen overflow-y-scroll">
-        <Outlet />
+        <Outlet/>
       </div>
     </div>
   )

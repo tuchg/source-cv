@@ -3,7 +3,7 @@
  * ResumeItem interface that holds information about an item in a resume.
  */
 export interface ResumeItem {
-  id: number
+  id: string
   kind: ResumeItemKind
   content: string | string[] | Date | Date[] | number
   label: string
@@ -25,6 +25,11 @@ export interface ResumeText extends ResumeItem {
 
 export interface ResumeTags extends ResumeItem {
   kind: ResumeItemKind.Tags
+  content: string[]
+}
+
+export interface ResumeList extends ResumeItem {
+  kind: ResumeItemKind.List
   content: string[]
 }
 
@@ -79,5 +84,6 @@ export enum ResumeItemKind {
   DateRange,
   Email,
   Phone,
+  List,
   None,
 }

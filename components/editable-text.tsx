@@ -5,11 +5,12 @@ import {Button} from "@/components/ui/button"
 import {Input} from "@/components/ui/input"
 import {Label} from "@/components/ui/label"
 import {useSnapshot} from "valtio";
-import {appStore} from "@/pages/editor";
-import {set} from "lodash-es";
+import {get, set} from "lodash-es";
+import {appStore} from "@/store";
+import {Textarea} from "@/components/ui/textarea";
 
-export function EditableText() {
-  const {title: text} = useSnapshot(appStore.appModelWithReactive.data.meta._extra)
+export function EditableText({modelKey, propKey}) {
+  const data = useSnapshot(get(appStore.appModelWithReactive.data, modelKey))
   const [isEditing, setIsEditing] = useState(false)
 
   const handleEditClick = () => {
@@ -18,7 +19,8 @@ export function EditableText() {
 
   // @ts-ignore
   const handleTextChange = (e) => {
-    appStore.appModelWithReactive.data.meta._extra.title = e.target.value
+    // appStore.appModelWithReactive.data.meta._extra.title = e.target.value
+    set(appStore.appModelWithReactive.data, `${modelKey}.${propKey}`, e.target.value)
   }
 
   const handleSaveClick = () => {
@@ -37,17 +39,24 @@ export function EditableText() {
   }
 
   return (
-    <div>
-      <div className="flex flex-row justify-between space-x-1 items-center">
+      <div className="flex-1 flex flex-row justify-between space-x-1 items-center">
         {/*<Button className="h-8 px-1" variant="ghost"> <Icons.work size={16}/></Button>*/}
         {isEditing ? (
           <>
-            <Input
-              className="w-40 h-8"
-              value={text}
-              onChange={handleTextChange}
-              onKeyDown={handleKeyPress}
-            />
+            {get(data,propKey).length>20?
+              <Textarea
+                value={get(data,propKey)}
+                onChange={handleTextChange}
+                onKeyDown={handleKeyPress}
+              />:
+              <Input
+                className="w-40 h-8"
+                value={get(data,propKey)}
+                onChange={handleTextChange}
+                onKeyDown={handleKeyPress}
+              />
+            }
+
             <Button className="h-8" variant="ghost" onClick={handleSaveClick}>
               <Icons.check size={16}/>
             </Button>
@@ -55,7 +64,7 @@ export function EditableText() {
         ) : (
           <>
             <Label className="mr-1" onDoubleClick={handleEditClick}>
-              {text}
+              {get(data,propKey)}
             </Label>
             <Button
               className="h-8 pl-0"
@@ -67,6 +76,5 @@ export function EditableText() {
           </>
         )}
       </div>
-    </div>
   )
 }

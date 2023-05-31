@@ -1,6 +1,5 @@
 import { DataManager } from "@/pages/data-manager"
 import ChatSection from "@/pages/editor/chat-section"
-import CodeSection from "@/pages/editor/code-section"
 import { DataSection } from "@/pages/editor/data-section"
 import GptSection from "@/pages/editor/gpt-section"
 import { Guide } from "@/pages/guide"
@@ -12,6 +11,7 @@ import { UserSpace } from "@/pages/user-space"
 import { Route, RouteObject, Routes } from "react-router"
 
 import { EditorLayout } from "@/components/editor/layout"
+import {CodeSection} from "@/pages/code-section";
 
 export const routes: RouteObject[] = [
   {

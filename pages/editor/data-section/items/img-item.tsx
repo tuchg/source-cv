@@ -1,14 +1,14 @@
 import { FC } from "react"
-import { ResumeItem } from "@/types"
+import {ResumeImage, ResumeItem} from "@/types"
 import { get, set } from "lodash-es"
 import { useSnapshot } from "valtio"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { appStore } from "../../index"
 import { ItemProps } from "../item-body"
+import {appStore} from "@/store";
 
 export const ImgItem: FC<ItemProps> = ({ itemKey }) => {
-  const { content } = useSnapshot<ResumeItem>(
+  const { content } = useSnapshot<ResumeImage>(
     get(appStore.appModelWithReactive.data, itemKey)!
   )
   const handleAvatarClick = () => {

@@ -4,8 +4,8 @@ import {proxy, subscribe} from "valtio"
 
 import {initialValue} from "../store"
 import {fromApplication, intoApplication} from "./index"
-import {appStore} from "@/pages/editor";
-import {getResume} from "@/lib/resume/database";
+import {getResume, syncResumes} from "@/lib/resume/database";
+import {appStore} from "@/store";
 
 export class ResumeModel {
   /**
@@ -52,7 +52,7 @@ export class ResumeModel {
       await this.persist()
     })
 
-    this.syncSchema()
+    this.syncSchema(true)
   }
 
 
@@ -61,11 +61,15 @@ export class ResumeModel {
     return new ResumeModel(data)
   }
 
-  syncSchema(path?: string, value?: unknown) {
+  syncSchema(first?: boolean, path?: string, value?: unknown) {
     if (path && value) {
       set(this.schemaModel.data, path, value)
     } else {
+      console.log("syncing schema")
       this.schemaModel.data = fromApplication(this.appModelWithReactive.data)
+      if (!first && this.appModelWithReactive.data) {
+        syncResumes(this.appModelWithReactive.data)
+      }
     }
   }
 
@@ -93,6 +97,11 @@ export interface OpsLog {
 }
 
 
-export const takeResume = (id: number) => {
+export const takeResume = (id: string) => {
   appStore.appModelWithReactive.data = getResume(id)!
+}
+
+export const schemaToResume = () => {
+  if (appStore.schemaModel.data)
+    appStore.appModelWithReactive.data = intoApplication(appStore.schemaModel.data)
 }

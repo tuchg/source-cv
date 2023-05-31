@@ -134,13 +134,16 @@ import {
 } from "@/components/ui/dialog"
 import {Input} from "@/components/ui/input"
 import {Label} from "@/components/ui/label"
+import {useState} from "react";
 
 function LoginPanel() {
   const navigate = useNavigate()
-
+  const [name, setName] = useState("test")
   const onLogin = () => {
-    navigate("/space")
+    navigate("/space", {state: {name}})
+    localStorage.setItem("user-name", name)
   }
+
   return (<Dialog>
     <DialogTrigger asChild>
       <Link
@@ -167,7 +170,7 @@ function LoginPanel() {
             <CardContent className="space-y-2 m-2">
               <div className="space-y-1">
                 <Label htmlFor="name">用户名</Label>
-                <Input id="name" defaultValue="test"/>
+                <Input id="name" defaultValue="test" value={name} onChange={(e) => setName(e.target.value)}/>
               </div>
               <div className="space-y-1">
                 <Label htmlFor="username">用户密码</Label>
@@ -176,6 +179,7 @@ function LoginPanel() {
             </CardContent>
             <CardFooter>
               <Button onClick={onLogin}>登录</Button>
+              <Button variant="ghost" onClick={onLogin}>找回密码</Button>
             </CardFooter>
           </Card>
         </TabsContent>
@@ -187,8 +191,8 @@ function LoginPanel() {
                 <Input id="name" defaultValue="wzc"/>
               </div>
               <div className="space-y-1">
-                <Label htmlFor="username">手机号码</Label>
-                <Input id="username" type="phone" defaultValue="17673423423"/>
+                <Label htmlFor="username">电子邮箱</Label>
+                <Input id="username" type="email" defaultValue="17673423423@qq.com"/>
               </div>
               <div className="space-y-1">
                 <Label htmlFor="username">用户密码</Label>

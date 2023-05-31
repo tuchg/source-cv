@@ -1,20 +1,22 @@
-import { useEffect, useRef, useState } from "react"
-import { useTemplate } from "@/hooks/use-template"
-import { proxy, useSnapshot } from "valtio"
-
-import { appStore, settingsStore } from "./editor"
+import {useEffect, useRef, useState} from "react"
+import {useTemplate} from "@/hooks/use-template"
+import {proxy, useSnapshot} from "valtio"
+import {appStore, previewSectionSize, settingsStore} from "@/store";
+import {tryTemplate} from "@/lib/resume/database";
+import {drawHTML} from "rasterizehtml";
 
 const width = 794
 const height = 1123
 const ori = Math.sqrt(width ** 2 + height ** 2)
-export const previewSectionSize = proxy({ width: 0, height: 0 })
 
 export const PreviewSection = () => {
-  const { data: resume } = useSnapshot(appStore.schemaModel)
+  const {template} = useSnapshot(settingsStore)
 
-  const { template } = useSnapshot(settingsStore)
-  const { data: html, isLoading } = useTemplate(template)
-  const { width: secWidth, height: secHeight } = useSnapshot(previewSectionSize)
+  const {html} = useTemplate(template)
+
+  const {data} = useSnapshot(appStore.schemaModel)
+
+  const {width: secWidth, height: secHeight} = useSnapshot(previewSectionSize)
 
   const [scale, setScale] = useState(0.8)
   const wrapperRef = useRef<HTMLDivElement>(
@@ -30,6 +32,31 @@ export const PreviewSection = () => {
     const offset = newScale > 0.5 ? 0.2 : 0.1
     setScale(newScale + offset)
   }, [secWidth, secHeight])
+
+  const iframeRef = useRef<HTMLIFrameElement>(null)
+
+
+  useEffect(() => {
+    if (iframeRef) {
+      console.log("通知更新")
+      console.log("开始截图")
+      var canvas = document.getElementById("canvas");
+      drawHTML(html, canvas as HTMLCanvasElement).then(function (result) {
+        tryTemplate(template, result.image.src)
+      })
+
+        // html2canvas(iframeRef.current!.contentDocument.body,
+        //   {
+        //     // useCORS: true,
+        //     allowTaint: true,
+        //   }
+        // )
+        //   .then(canvas => {
+        //     tryTemplate(template, canvas.toDataURL())
+        //   })
+
+    }
+  }, [html])
 
   return (
     <div
@@ -47,12 +74,13 @@ export const PreviewSection = () => {
         }}
       >
         <iframe
+          ref={iframeRef}
           title=""
           srcDoc={html}
           id={previewSectionId}
           // className=" max-w-screen-lg aspect-[21/29.7] z-10 border-0 w-[21cm] min-h-[200vh] overflow-hidden mx-auto">
           className=" aspect-[21/29.7] z-10 border-0 min-h-[200vh] overflow-hidden mx-auto  max-w-screen-lg"
-        ></iframe>
+        />
       </div>
     </div>
   )

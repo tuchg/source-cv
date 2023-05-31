@@ -24,11 +24,12 @@ export type AppResumeSchema = IntoApplicationSchema<
   }
 }
 export type AppResumeDBMeta={
-  id: number
+  id: string
   title: string
   description: string
   preview: string
   lang: string
+  jd?: string
   create_at?: Date
   update_at?: Date
 }

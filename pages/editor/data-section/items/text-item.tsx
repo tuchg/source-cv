@@ -1,14 +1,14 @@
 import { ChangeEvent, FC } from "react"
-import { ResumeItem } from "@/types"
+import {ResumeItem, ResumeText} from "@/types"
 import { get, set } from "lodash-es"
 import { useSnapshot } from "valtio"
 
 import { Input } from "@/components/ui/input"
-import { appStore } from "../../index"
 import { ItemProps } from "../item-body"
+import {appStore} from "@/store";
 
 export const TextItem: FC<ItemProps> = ({ itemKey }) => {
-  const { content } = useSnapshot<ResumeItem>(
+  const { content } = useSnapshot<ResumeText>(
     get(appStore.appModelWithReactive.data, itemKey)!
   )
 

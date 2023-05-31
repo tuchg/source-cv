@@ -1,7 +1,5 @@
 import {startTransition, useEffect, useState} from "react"
 import {
-  PreviewSection,
-  previewSectionSize,
   print,
   share,
 } from "@/pages/preview-section"
@@ -16,17 +14,18 @@ import {Button} from "@/components/ui/button"
 import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover";
 import {Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandShortcut} from "@/components/ui/command";
 import {useSnapshot} from "valtio";
-import {appStore} from "@/pages/editor";
+import {appStore, settingsStore} from "@/store";
+import {schemaToResume} from "@/lib/resume/resume-model";
 
-export const EditorHeader = () => {
+export const EditorHeader = ({onSwap}) => {
   const navigate = useNavigate()
   const {pathname} = useLocation();
 
   const [section, setSection] = useState("")
 
+  const {template} = useSnapshot(settingsStore)
 
   useEffect(() => {
-    console.log(pathname, pathname.indexOf("source"))
     if (pathname.indexOf("source") > 0) {
       setSection("源码")
     } else if (pathname.indexOf("guide") > 0 || pathname.indexOf("interview") > 0) {
@@ -51,7 +50,7 @@ export const EditorHeader = () => {
   const [modOpen, setModOpen] = useState(false)
 
 
-  const {lang} = useSnapshot(appStore.appModelWithReactive.data.meta._extra)
+  // const {lang} = useSnapshot(appStore.appModelWithReactive.data.meta._extra)
   const commandExec = (command: string) => {
     startTransition(() => {
       navigate(command)
@@ -81,8 +80,12 @@ export const EditorHeader = () => {
   }
 
   const onEdit = () => {
+    schemaToResume()
     commandExec("/editor")
   }
+
+  const {lang} = useSnapshot(settingsStore)
+
   return (
     <header className="m-1">
       <div className="flex justify-between items-center">
@@ -90,7 +93,7 @@ export const EditorHeader = () => {
           <Button className="h-8" variant="ghost" onClick={onBack}>
             <Icons.back size={16}/>
           </Button>
-          <EditableText/>
+          <EditableText modelKey="meta._extra" propKey="title"/>
 
           <Popover open={langOpen} onOpenChange={setLangOpen}>
             <PopoverTrigger>
@@ -101,8 +104,14 @@ export const EditorHeader = () => {
                 <CommandInput placeholder="搜索语言"/>
                 <CommandEmpty>尚未支持</CommandEmpty>
                 <CommandGroup>
-                  <CommandItem>English</CommandItem>
-                  <CommandItem>中文</CommandItem>
+                  <CommandItem onSelect={() => {
+                    settingsStore.lang = "English";
+                    setLangOpen(false);
+                  }}>English</CommandItem>
+                  <CommandItem onSelect={() => {
+                    settingsStore.lang = "简体中文";
+                    setLangOpen(false);
+                  }}>简体中文</CommandItem>
                 </CommandGroup>
               </Command>
             </PopoverContent>
@@ -151,7 +160,7 @@ export const EditorHeader = () => {
           <ResumeCommand/>
         </nav>
         <div className="flex items-center">
-          <Button className="h-8 p-1 mx-1" variant="ghost">
+          <Button className="h-8 p-1 mx-1" variant="ghost" onClick={onSwap}>
             <Icons.swap size={16} className="mr-1"/>
             交换
           </Button>
@@ -161,7 +170,7 @@ export const EditorHeader = () => {
             onClick={goTemplates}
           >
             <Icons.template size={16} className="mr-1"/>
-            模版 - APage{" "}
+            模版 - {template.split("-theme-")[1]}
           </Button>
           <Button className="h-8 p-1 mx-1" variant="ghost" onClick={print}>
             <Icons.print size={16} className="mr-1"/>

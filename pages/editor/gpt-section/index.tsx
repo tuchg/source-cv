@@ -1,21 +1,23 @@
-import React, { useEffect, useRef, useState } from "react"
-import { BotIcon, CircleDot, SidebarCloseIcon } from "lucide-react"
-import { BeatLoader } from "react-spinners"
-import { proxy, useSnapshot } from "valtio"
+import React, {useEffect, useRef, useState} from "react"
+import {BotIcon, CircleDot, SidebarCloseIcon} from "lucide-react"
+import {BeatLoader} from "react-spinners"
+import {proxy, useSnapshot} from "valtio"
 
-import { guideResume, makeResume } from "@/lib/gpt/gpt-langchain"
-import { flattenResumeSchema } from "@/lib/resume"
-import { Button } from "@/components/ui/button"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { appStore } from "../index"
+import {guideResume, makeResume} from "@/lib/gpt/gpt-langchain"
+import {flattenResumeSchema} from "@/lib/resume"
+import {Button} from "@/components/ui/button"
+import {Label} from "@/components/ui/label"
+import {Textarea} from "@/components/ui/textarea"
+import {appStore, guideContent, settingsStore} from "@/store";
+import {draftResume} from "@/lib/gpt/drafter";
 
-export const guideContent = proxy({ msg: "" })
+
 export default function () {
-  const [jd, setJD] = React.useState("")
+  const {jd,lang}= useSnapshot(appStore.appModelWithReactive.data.meta._extra)
+
   const [saveLoading, setSaveLoading] = useState(false)
   const [guideLoading, setGuideLoading] = useState(false)
-  const { msg } = useSnapshot(guideContent)
+  const {msg} = useSnapshot(guideContent)
   const msgRef = useRef(null)
 
   useEffect(() => {
@@ -24,16 +26,13 @@ export default function () {
 
   const onMake = async () => {
     setSaveLoading(true)
-    const resume = await makeResume(
-      jd,
-      flattenResumeSchema(appStore.schemaModel)
-    )
+    // await draftResume(jd,lang, appStore.schemaModel.data)
     setSaveLoading(false)
   }
   const onGuide = async () => {
     setGuideLoading(true)
     guideContent.msg = ""
-    await guideResume(jd, flattenResumeSchema(appStore.schemaModel))
+    await guideResume(jd!, flattenResumeSchema(appStore.schemaModel.data),settingsStore.lang)
     setGuideLoading(false)
   }
 
@@ -48,12 +47,12 @@ export default function () {
         <span className="block ml-2 font-bold text-gray-600">
           ChatGPT AI简历辅导
         </span>
-        <span className="absolute w-3 h-3 bg-green-600 rounded-full left-10 top-3" />
+        <span className="absolute w-3 h-3 bg-green-600 rounded-full left-10 top-3"/>
         <div className="absolute right-0 mr-3"></div>
       </div>
       <div className="flex justify-between self-center">
         <Label htmlFor="message-2">岗位描述</Label>
-        <SidebarCloseIcon size={16} />
+        <SidebarCloseIcon size={16}/>
       </div>
       <Textarea
         value={jd}
@@ -63,21 +62,21 @@ export default function () {
         id="message-2"
       />
       <p className="text-sm text-slate-500">
-        <BotIcon size={18} className="inline-block mr-1" />
+        <BotIcon size={18} className="inline-block mr-1"/>
       </p>
       <div className="flex justify-between space-x-4">
-        <Button onClick={onMake} className="w-full border-blue-600">
-          {" "}
-          {saveLoading ? (
-            <BeatLoader className="m-auto block" size={8} color="#fff" />
-          ) : (
-            "制作简历"
-          )}{" "}
-        </Button>
+        {/*<Button onClick={onMake} className="w-full border-blue-600">*/}
+        {/*  {" "}*/}
+        {/*  {saveLoading ? (*/}
+        {/*    <BeatLoader className="m-auto block" size={8} color="#fff"/>*/}
+        {/*  ) : (*/}
+        {/*    "制作简历"*/}
+        {/*  )}{" "}*/}
+        {/*</Button>*/}
         <Button onClick={onGuide} className="w-full" variant="secondary">
           {" "}
           {guideLoading ? (
-            <BeatLoader className="m-auto block" size={8} color="#fff" />
+            <BeatLoader className="m-auto block" size={8} color="#fff"/>
           ) : (
             "简历指导建议"
           )}{" "}

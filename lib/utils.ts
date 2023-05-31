@@ -16,3 +16,7 @@ export const fetcher = (url: string, config?: RequestInit) =>
       Authorization: `${localStorage.getItem("token")}`,
     },
   })
+
+export const randomId = () => {
+  return Math.random().toString(36).substring(2, 9);
+}

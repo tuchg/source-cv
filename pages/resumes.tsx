@@ -1,7 +1,7 @@
 import {useState} from "react"
 import {
   useDelResume,
-  useDupResume,
+  useDupResume, useNewAIResume,
   useNewResume,
   useResumes,
 } from "@/app/api/space"
@@ -9,7 +9,7 @@ import {PlusCircle} from "lucide-react"
 import {useNavigate} from "react-router"
 
 import {saveImage} from "@/lib/resume/database"
-import {cn} from "@/lib/utils"
+import {cn, randomId} from "@/lib/utils"
 import {Icons} from "@/components/icons"
 import {
   AlertDialog,
@@ -47,9 +47,11 @@ import {Textarea} from "@/components/ui/textarea";
 import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
 import dayjs from "dayjs";
 import {takeResume} from "@/lib/resume/resume-model";
+import {BeatLoader} from "react-spinners";
+import {settingsStore} from "@/store";
 
 export const MyResumes = () => {
-  const {data: resumes} = useResumes("zh")
+  const {data: resumes} = useResumes("简体中文")
   const {trigger: delResume} = useDelResume()
   const {trigger: dupResume} = useDupResume()
 
@@ -98,7 +100,7 @@ export const MyResumes = () => {
               <TabsTrigger value="music" className="relative">
                 中文
               </TabsTrigger>
-              <TabsTrigger value="podcasts"> English</TabsTrigger>
+              {/*<TabsTrigger value="podcasts"> English</TabsTrigger>*/}
               <TabsTrigger value="live" disabled>
                 Come soon
               </TabsTrigger>
@@ -114,7 +116,7 @@ export const MyResumes = () => {
                   个人简历
                 </h2>
                 <p className="text-sm text-muted-foreground">
-                  精选个人技能、经历和成就，了解专业背景。
+                  精选个人技能、经历和成就，以及专业背景。
                 </p>
               </div>
             </div>
@@ -154,51 +156,49 @@ export const MyResumes = () => {
                             <Label className="text-xs text-muted-foreground">
                               {dayjs(resume.update_at).format("YYYY-MM-DD hh:mm:ss")}
                             </Label>
-                            <div>
-                              <Button
-                                onClick={() => onEdit(resume.id)}
-                                variant="ghost"
-                              >
-                                <Icons.edit size={16}/>
-                              </Button>
+                            <Button
+                              onClick={() => onEdit(resume.id)}
+                              variant="ghost"
+                            >
+                              <Icons.edit size={16}/>
+                            </Button>
 
-                              <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                  <Button
-                                    // onClick={onDel}
-                                    variant="ghost"
-                                  >
-                                    <Icons.more size={16}/>
-                                  </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent>
-                                  <DropdownMenuItem
-                                    onClick={() => onDup(resume.id, "en")}
-                                  >
-                                    <Icons.trans size={16}/>
-                                    <Label className="ml-1">复制为英文</Label>
-                                  </DropdownMenuItem>
-                                  <DropdownMenuItem
-                                    onClick={() => onPrint(resume.id)}
-                                  >
-                                    <Icons.print size={16}/>
-                                    <Label className="ml-1">打印</Label>
-                                  </DropdownMenuItem>
-                                  <DropdownMenuItem
-                                    onClick={() => onDup(resume.id)}
-                                  >
-                                    <Icons.copy size={16}/>
-                                    <Label className="ml-1">复制</Label>
-                                  </DropdownMenuItem>
-                                  <DropdownMenuItem
-                                    onClick={() => onDel(resume.id)}
-                                  >
-                                    <Icons.del size={16}/>
-                                    <Label className="ml-1">删除</Label>
-                                  </DropdownMenuItem>
-                                </DropdownMenuContent>
-                              </DropdownMenu>
-                            </div>
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <Button
+                                  // onClick={onDel}
+                                  variant="ghost"
+                                >
+                                  <Icons.more size={16}/>
+                                </Button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent>
+                                {/*<DropdownMenuItem*/}
+                                {/*  onClick={() => onDup(resume.id, "en")}*/}
+                                {/*>*/}
+                                {/*  <Icons.trans size={16}/>*/}
+                                {/*  <Label className="ml-1">复制为英文</Label>*/}
+                                {/*</DropdownMenuItem>*/}
+                                <DropdownMenuItem
+                                  onClick={() => onPrint(resume.id)}
+                                >
+                                  <Icons.print size={16}/>
+                                  <Label className="ml-1">打印</Label>
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                  onClick={() => onDup(resume.id)}
+                                >
+                                  <Icons.copy size={16}/>
+                                  <Label className="ml-1">复制</Label>
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                  onClick={() => onDel(resume.id)}
+                                >
+                                  <Icons.del size={16}/>
+                                  <Label className="ml-1">删除</Label>
+                                </DropdownMenuItem>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
                           </div>
                         </div>
                       </Card>
@@ -231,11 +231,10 @@ export const MyResumes = () => {
       <AlertDialog open={del}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogTitle>请确认</AlertDialogTitle>
             <AlertDialogDescription>
               <>
-                确认后将彻底删除 【后台开发工程师（校招) -
-                腾讯基础架构】简历，此操作无法撤销。
+                确认后将彻底删除 【{selected}】简历，此操作无法撤销。
                 <div className="flex items-center space-x-2 mt-3">
                   <Checkbox
                     id="deep"
@@ -269,11 +268,15 @@ export const MyResumes = () => {
 
 const NewResumeBtn = () => {
   const {trigger: newResume} = useNewResume()
-  const navigate = useNavigate()
+  const {trigger: newAIResume, isMutating: isAiMutating} = useNewAIResume()
+  // const navigate = useNavigate()
 
   const [desc, setDesc] = useState("")
   const [name, setName] = useState("")
   const [cover, setCover] = useState("")
+  const [lang, setLang] = useState("简体中文")
+  const [jobDesc, setJobDesc] = useState("Java 软件研发工程师 3-5年\n职责描述：\n1.根据MOA/WMS/SAP等业务系统的需求报告，梳理和设计系统开发点；\n2.在现有微服务架构上带领开发团队完成各业务模块架构和功能的设计；\n3.参与系统代码的设计与开发，支持在关键技术点上进行指导和把关，并对代码进行定期review，保证代码质量；\n4.支持系统代码的调试和上线部署，处理线上版本bug，支持系统的推广实施；\n5.配合项目的整体计划，对技术人员进行技术培训和指导。\n任职要求：\n1.全日制本科及以上学历，计算机、机械设计制造、电子工程、数学及应用数学专业优先；\n2.3年以上JAVA经验，有MOA/WMS/SAP等业务系统开发经验，作为主要设计人员参与过两个以上系统开发项目；\n3.精通JAVA语言，熟练掌握HTML/CSS/JS，熟悉jQuery、bootstrap等前端框架，了解webservice相关编程技术；\n4.熟练使用eclipse、Idea开发工具，掌握Tomcat等主流J2EE应用服务器一种或多种；精通Nginx部署、配置、优化；\n5.熟悉主流设计库设计与优化，能熟练使用SQL语言编程；至少精通一种UML建模工具。")
+  const [open, setOpen] = useState(false)
 
   const handleFileSelected = (event: any) => {
     const file = event.target.files[0]
@@ -295,28 +298,39 @@ const NewResumeBtn = () => {
     input.click()
   }
 
-  const onNew = async () => {
-    const newID = Math.random()
-    saveImage("" + newID, cover)
-    await newResume({
+  const onNew = async (e: any, isAi?: boolean) => {
+    const newID = randomId()
+    saveImage(newID, cover)
+    const args = {
       id: newID,
       title: name,
       description: desc,
-      preview: "" + newID,
-      lang: "zh",
-    })
+      preview: newID,
+      lang,
+      jd: jobDesc,
+    };
+    settingsStore.lang = lang;
+
+    if (isAi) {
+      await newAIResume(args)
+    } else {
+      await newResume(args)
+    }
+
     takeResume(newID)
-    navigate("/editor")
+    setOpen(false)
   }
 
-  return <Dialog>
+  const onAINew = () => onNew(null, true)
+
+  return <Dialog open={open} onOpenChange={setOpen}>
     <DialogTrigger asChild>
       <Button>
         <PlusCircle className="mr-2 h-4 w-4"/>
         新建
       </Button>
     </DialogTrigger>
-    <DialogContent className="sm:max-w-[425px]">
+    <DialogContent>
       <DialogHeader>
         <DialogTitle>新建简历</DialogTitle>
         <DialogDescription>
@@ -332,14 +346,21 @@ const NewResumeBtn = () => {
         </div>
         <div className="grid grid-cols-4 items-center gap-4">
           <Label htmlFor="username" className="text-right">
-            简历描述
+            简历概要
           </Label>
           <Textarea id="username" value={desc} onChange={(e) => setDesc(e.target.value)} className="col-span-3"/>
         </div>
 
         <div className="grid grid-cols-4 items-center gap-4">
+          <Label htmlFor="jd" className="text-right">
+            面向职位
+          </Label>
+          <Textarea id="jd" value={jobDesc} onChange={(e) => setJobDesc(e.target.value)} className="col-span-3"/>
+        </div>
+
+        <div className="grid grid-cols-4 items-center gap-4">
           <Label htmlFor="username" className="text-right">
-            简历描述
+            封面图
           </Label>
           <Avatar className="h-[20rem] w-[15rem] rounded-none" onClick={handleAvatarClick}>
             <AvatarImage className="rounded-none" src={cover}/>
@@ -350,70 +371,15 @@ const NewResumeBtn = () => {
           <Label htmlFor="name" className="text-right">
             语言
           </Label>
-          <Input id="name" value="中文" className="col-span-3" onChange={() => {
-          }}/>
+          <Input id="name" value={lang} className="col-span-3" onChange={(e) => setLang(e.target.value)}/>
         </div>
       </div>
       <DialogFooter>
+        <Button onClick={onAINew} variant="secondary">{
+          isAiMutating ? <BeatLoader className="mr-2 h-4 w-4"/> : "AI生成"
+        }</Button>
         <Button onClick={onNew}>确认</Button>
       </DialogFooter>
     </DialogContent>
   </Dialog>
 }
-
-export const listenNowAlbums = [
-  {
-    name: "后台开发工程师（校招）",
-    artist: "通用",
-    cover:
-      "https://images.unsplash.com/photo-1611348586804-61bf6c080437?w=300&dpr=2&q=80",
-  },
-  {
-    name: "后台开发工程师（校招）",
-    artist: "腾讯-基础架构",
-    cover:
-      "https://images.unsplash.com/photo-1468817814611-b7edf94b5d60?w=300&dpr=2&q=80",
-  },
-  {
-    name: "全栈开发工程师（校招）",
-    artist: "腾讯-后台开发",
-    cover:
-      "https://images.unsplash.com/photo-1528143358888-6d3c7f67bd5d?w=300&dpr=2&q=80",
-  },
-  {
-    name: "Stateful Symphony",
-    artist: "Beth Binary",
-    cover:
-      "https://images.unsplash.com/photo-1490300472339-79e4adc6be4a?w=300&dpr=2&q=80",
-  },
-  {
-    name: "Stateful Symphony",
-    artist: "Beth Binary",
-    cover:
-      "https://images.unsplash.com/photo-1490300472339-79e4adc6be4a?w=300&dpr=2&q=80",
-  },
-  {
-    name: "Stateful Symphony",
-    artist: "Beth Binary",
-    cover:
-      "https://images.unsplash.com/photo-1490300472339-79e4adc6be4a?w=300&dpr=2&q=80",
-  },
-  {
-    name: "Stateful Symphony",
-    artist: "Beth Binary",
-    cover:
-      "https://images.unsplash.com/photo-1490300472339-79e4adc6be4a?w=300&dpr=2&q=80",
-  },
-  {
-    name: "Stateful Symphony",
-    artist: "Beth Binary",
-    cover:
-      "https://images.unsplash.com/photo-1490300472339-79e4adc6be4a?w=300&dpr=2&q=80",
-  },
-  {
-    name: "Stateful Symphony",
-    artist: "Beth Binary",
-    cover:
-      "https://images.unsplash.com/photo-1490300472339-79e4adc6be4a?w=300&dpr=2&q=80",
-  },
-]

@@ -1,28 +1,60 @@
-import { FC } from "react"
-import { ResumeItem } from "@/types"
-import { get, set } from "lodash-es"
-import { proxy, useSnapshot } from "valtio"
+import {FC} from "react"
+import {appStore, settingsStore} from "@/store"
+import {ResumeItem, ResumeTextArea} from "@/types"
+import {get, set} from "lodash-es"
+import {proxy, useSnapshot} from "valtio"
 
-import { Textarea } from "@/components/ui/textarea"
-import { appStore } from "../../index"
-import { ItemProps } from "../item-body"
+import {Icons} from "@/components/icons"
+import {Button} from "@/components/ui/button"
+import {Textarea} from "@/components/ui/textarea"
+import {ItemProps} from "../item-body"
+import {CircleLoader, RingLoader} from "react-spinners";
+import {useRewrite} from "@/app/api/space";
 
-export const TextareaItem: FC<ItemProps> = ({ itemKey }) => {
-  const { content } = useSnapshot<ResumeItem>(
+export const TextareaItem: FC<ItemProps> = ({itemKey}) => {
+  const {content} = useSnapshot<ResumeTextArea>(
     get(appStore.appModelWithReactive.data, itemKey)!
   )
 
+  const {trigger, isMutating} = useRewrite()
+
+  const onRewrite = async () => {
+    const result = await trigger({
+      text: content,
+      jd: appStore.appModelWithReactive.data.meta._extra.jd ?? "",
+      lang: settingsStore.lang
+    })
+
+    console.log("润色结果：", result)
+    set(
+      appStore.appModelWithReactive.data,
+      `${itemKey}.content`,
+      result
+    )
+  }
+
   return (
-    <Textarea
-      className="h-96 w-11/12"
-      defaultValue={content as string}
-      onChange={(event) =>
-        set(
-          appStore.appModelWithReactive.data,
-          `${itemKey}.content`,
-          event.target.value
-        )!
-      }
-    />
+    <div className="relative">
+      <Textarea
+        className="h-32 pr-[3rem]"
+        value={content as string}
+        onChange={(event) =>
+          set(
+            appStore.appModelWithReactive.data,
+            `${itemKey}.content`,
+            event.target.value
+          )!
+        }
+      />
+      <div className="absolute top-1 right-1 flex flex-row">
+        <Button onClick={onRewrite} size="sm" variant="ghost">
+          {
+            isMutating ?
+              <RingLoader size={20}/> :
+              <Icons.wand size={18}/>
+          }
+        </Button>
+      </div>
+    </div>
   )
 }

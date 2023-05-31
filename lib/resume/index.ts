@@ -5,9 +5,7 @@ import {
   ResumeSchema,
   SectionExtra,
 } from "@/types"
-import {appStore} from "@/pages/editor";
-import {getResume} from "@/lib/resume/database";
-
+import {randomId} from "@/lib/utils";
 const newItem = (prop?: Partial<ResumeItem>) =>
   ({
     sort: i,
@@ -19,7 +17,7 @@ const newItem = (prop?: Partial<ResumeItem>) =>
 
 const newGroupExtra = (prop?: Record<string, any>) =>
   ({
-    id: i,
+    id: randomId(),
     sort: i,
     isEnable: true,
     isDraggable: true,
@@ -72,8 +70,12 @@ export function intoApplication(data: ResumeSchema): AppResumeSchema {
           return { ...intoApplication(item), _extra: newGroupExtra({ label }) }
         })
       } else {
+
+        if (key==='highlights'){
+
+        }
         content = {
-          kind: ResumeItemKind.Tags,
+          kind:key==='highlights'? ResumeItemKind.List:ResumeItemKind.Tags,
           bindingKey: key,
           content,
         }
@@ -101,7 +103,7 @@ export function intoApplication(data: ResumeSchema): AppResumeSchema {
           break
         case "image":
           kind = ResumeItemKind.Image
-          sort = 1
+          sort = 0
           break
         case "number":
           kind = ResumeItemKind.Number
@@ -123,7 +125,7 @@ export function intoApplication(data: ResumeSchema): AppResumeSchema {
           kind = ResumeItemKind.Text
       }
       content = newItem({
-        id: i++,
+        id: randomId(),
         kind,
         content,
         sort,

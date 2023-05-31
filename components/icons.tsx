@@ -35,6 +35,7 @@ import {
   User,
   Wand2,
   type Icon as LucideIcon,
+  Wand,
 } from "lucide-react"
 
 export type Icon = LucideIcon
@@ -51,7 +52,7 @@ export const Icons = {
   check: CheckCheck,
   back: ChevronLeft,
   print: Printer,
-  template: Wand2,
+  template: Wand,
   work: FileBadge,
   db: Database,
   table: Table,
@@ -68,6 +69,7 @@ export const Icons = {
   trans: Languages,
   more: MoreHorizontal,
   code: Code2,
+  wand:Wand2,
   bot: Bot,
   date: Calendar,
   swap: ArrowLeftRight,
