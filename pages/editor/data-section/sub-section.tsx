@@ -34,7 +34,6 @@ export const DataSubSection: FC<DataSubSectionProps> = ({...props}) => {
         cloneObject1._extra.label = "新建项"
         cloneObject1._extra.id = randomId()
 
-        console.log(cloneObject1)
         // set(appStore.appModelWithReactive.data, curr, [
         //   ...section,
         //   cloneObject1,
@@ -119,7 +118,7 @@ export interface DataSubSectionProps {
 function cloneObject(obj: any) {
   const clone = {}
   if (Array.isArray(obj)) {
-    return
+    return []
   }
   for (const prop in obj) {
     if (obj.hasOwnProperty(prop)) {
