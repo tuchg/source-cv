@@ -1,5 +1,28 @@
-import {useNavigate} from "react-router"
-import {Link} from "react-router-dom"
+import { useState } from "react"
+import { useNavigate } from "react-router"
+import { Link } from "react-router-dom"
+
+import { Button } from "@/components/ui/button"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 export default function Home() {
   const navigate = useNavigate()
@@ -11,8 +34,7 @@ export default function Home() {
   return (
     <div className="flex h-full flex-col">
       <header className="relative z-50 pb-11 lg:pt-11">
-        <div
-          className="mx-auto flex max-w-7xl flex-wrap items-center justify-center px-4 sm:justify-between sm:px-6 lg:flex-nowrap lg:px-8">
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-center px-4 sm:justify-between sm:px-6 lg:flex-nowrap lg:px-8">
           <div className="mt-10 lg:mt-0 lg:grow lg:basis-0">
             <svg
               aria-hidden="true"
@@ -33,8 +55,7 @@ export default function Home() {
               ></path>
             </svg>
           </div>
-          <div
-            className="order-first -mx-4 flex flex-auto basis-full overflow-x-auto whitespace-nowrap border-b border-blue-600/10 py-4 font-mono text-sm text-blue-600 sm:-mx-6 lg:order-none lg:mx-0 lg:basis-auto lg:border-0 lg:py-0">
+          <div className="order-first -mx-4 flex flex-auto basis-full overflow-x-auto whitespace-nowrap border-b border-blue-600/10 py-4 font-mono text-sm text-blue-600 sm:-mx-6 lg:order-none lg:mx-0 lg:basis-auto lg:border-0 lg:py-0">
             <div className="mx-auto flex items-center gap-4 px-4">
               <p>
                 <time dateTime="2022-04-04">
@@ -60,7 +81,7 @@ export default function Home() {
             </div>
           </div>
           <div className="hidden sm:mt-10 sm:flex lg:mt-0 lg:grow lg:basis-0 lg:justify-end">
-            <LoginPanel/>
+            <LoginPanel />
           </div>
         </div>
       </header>
@@ -75,8 +96,7 @@ export default function Home() {
                 className="absolute left-0 top-2/3 h-[0.58em] w-full fill-blue-300/70"
                 preserveAspectRatio="none"
               >
-                <path
-                  d="M203.371.916c-26.013-2.078-76.686 1.963-124.73 9.946L67.3 12.749C35.421 18.062 18.2 21.766 6.004 25.934 1.244 27.561.828 27.778.874 28.61c.07 1.214.828 1.121 9.595-1.176 9.072-2.377 17.15-3.92 39.246-7.496C123.565 7.986 157.869 4.492 195.942 5.046c7.461.108 19.25 1.696 19.17 2.582-.107 1.183-7.874 4.31-25.75 10.366-21.992 7.45-35.43 12.534-36.701 13.884-2.173 2.308-.202 4.407 4.442 4.734 2.654.187 3.263.157 15.593-.78 35.401-2.686 57.944-3.488 88.365-3.143 46.327.526 75.721 2.23 130.788 7.584 19.787 1.924 20.814 1.98 24.557 1.332l.066-.011c1.201-.203 1.53-1.825.399-2.335-2.911-1.31-4.893-1.604-22.048-3.261-57.509-5.556-87.871-7.36-132.059-7.842-23.239-.254-33.617-.116-50.627.674-11.629.54-42.371 2.494-46.696 2.967-2.359.259 8.133-3.625 26.504-9.81 23.239-7.825 27.934-10.149 28.304-14.005.417-4.348-3.529-6-16.878-7.066Z"></path>
+                <path d="M203.371.916c-26.013-2.078-76.686 1.963-124.73 9.946L67.3 12.749C35.421 18.062 18.2 21.766 6.004 25.934 1.244 27.561.828 27.778.874 28.61c.07 1.214.828 1.121 9.595-1.176 9.072-2.377 17.15-3.92 39.246-7.496C123.565 7.986 157.869 4.492 195.942 5.046c7.461.108 19.25 1.696 19.17 2.582-.107 1.183-7.874 4.31-25.75 10.366-21.992 7.45-35.43 12.534-36.701 13.884-2.173 2.308-.202 4.407 4.442 4.734 2.654.187 3.263.157 15.593-.78 35.401-2.686 57.944-3.488 88.365-3.143 46.327.526 75.721 2.23 130.788 7.584 19.787 1.924 20.814 1.98 24.557 1.332l.066-.011c1.201-.203 1.53-1.825.399-2.335-2.911-1.31-4.893-1.604-22.048-3.261-57.509-5.556-87.871-7.36-132.059-7.842-23.239-.254-33.617-.116-50.627.674-11.629.54-42.371 2.494-46.696 2.967-2.359.259 8.133-3.625 26.504-9.81 23.239-7.825 27.934-10.149 28.304-14.005.417-4.348-3.529-6-16.878-7.066Z"></path>
               </svg>
               <span className="relative"> AIGC </span>
             </span>{" "}
@@ -94,8 +114,7 @@ export default function Home() {
                 aria-hidden="true"
                 className="h-3 w-3 flex-none fill-blue-600 group-active:fill-current"
               >
-                <path
-                  d="m9.997 6.91-7.583 3.447A1 1 0 0 1 1 9.447V2.553a1 1 0 0 1 1.414-.91L9.997 5.09c.782.355.782 1.465 0 1.82Z"></path>
+                <path d="m9.997 6.91-7.583 3.447A1 1 0 0 1 1 9.447V2.553a1 1 0 0 1 1.414-.91L9.997 5.09c.782.355.782 1.465 0 1.82Z"></path>
               </svg>
               <span className="ml-3">创建一份简历</span>
             </Link>
@@ -113,103 +132,102 @@ export default function Home() {
   )
 }
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs"
-import {Button} from "@/components/ui/button"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
-import {Input} from "@/components/ui/input"
-import {Label} from "@/components/ui/label"
-import {useState} from "react";
-
 function LoginPanel() {
   const navigate = useNavigate()
   const [name, setName] = useState("test")
   const onLogin = () => {
-    navigate("/space", {state: {name}})
+    navigate("/space", { state: { name } })
     localStorage.setItem("user-name", name)
   }
 
-  return (<Dialog>
-    <DialogTrigger asChild>
-      <Link
-        className="inline-flex justify-center rounded-2xl bg-blue-600 p-4 text-base font-semibold text-white hover:bg-blue-500 focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 active:text-white/70"
-        // to="/space"
-      >
-        登录
-      </Link>
-    </DialogTrigger>
-    <DialogContent>
-      <DialogHeader>
-        <DialogTitle>用户登录</DialogTitle>
-        <DialogDescription>
-          系统门户
-        </DialogDescription>
-      </DialogHeader>
-      <Tabs defaultValue="account" className="">
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="account">登录</TabsTrigger>
-          <TabsTrigger value="password">注册</TabsTrigger>
-        </TabsList>
-        <TabsContent value="account">
-          <Card>
-            <CardContent className="space-y-2 m-2">
-              <div className="space-y-1">
-                <Label htmlFor="name">用户名</Label>
-                <Input id="name" defaultValue="test" value={name} onChange={(e) => setName(e.target.value)}/>
-              </div>
-              <div className="space-y-1">
-                <Label htmlFor="username">用户密码</Label>
-                <Input id="username" type="password" defaultValue="@peduarte"/>
-              </div>
-            </CardContent>
-            <CardFooter>
-              <Button onClick={onLogin}>登录</Button>
-              <Button variant="ghost" onClick={onLogin}>找回密码</Button>
-            </CardFooter>
-          </Card>
-        </TabsContent>
-        <TabsContent value="password">
-          <Card>
-            <CardContent className="space-y-2 m-2">
-              <div className="space-y-1">
-                <Label htmlFor="name">用户名</Label>
-                <Input id="name" defaultValue="wzc"/>
-              </div>
-              <div className="space-y-1">
-                <Label htmlFor="username">电子邮箱</Label>
-                <Input id="username" type="email" defaultValue="17673423423@qq.com"/>
-              </div>
-              <div className="space-y-1">
-                <Label htmlFor="username">用户密码</Label>
-                <Input id="username" type="password" defaultValue="@peduarte"/>
-              </div>
-              <div className="space-y-1">
-                <Label htmlFor="username">再次确认密码</Label>
-                <Input id="username" type="password" defaultValue="@peduarte"/>
-              </div>
-            </CardContent>
-            <CardFooter>
-              <Button>注册</Button>
-            </CardFooter>
-          </Card>
-        </TabsContent>
-      </Tabs>
-
-    </DialogContent>
-  </Dialog>)
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <Link
+          className="inline-flex justify-center rounded-2xl bg-blue-600 p-4 text-base font-semibold text-white hover:bg-blue-500 focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 active:text-white/70"
+          // to="/space"
+        >
+          登录
+        </Link>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>用户登录</DialogTitle>
+          <DialogDescription>系统门户</DialogDescription>
+        </DialogHeader>
+        <Tabs defaultValue="account" className="">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="account">登录</TabsTrigger>
+            <TabsTrigger value="password">注册</TabsTrigger>
+          </TabsList>
+          <TabsContent value="account">
+            <Card>
+              <CardContent className="space-y-2 m-2">
+                <div className="space-y-1">
+                  <Label htmlFor="name">用户名</Label>
+                  <Input
+                    id="name"
+                    defaultValue="test"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                  />
+                </div>
+                <div className="space-y-1">
+                  <Label htmlFor="username">用户密码</Label>
+                  <Input
+                    id="username"
+                    type="password"
+                    defaultValue="@peduarte"
+                  />
+                </div>
+              </CardContent>
+              <CardFooter>
+                <Button onClick={onLogin}>登录</Button>
+                <Button variant="ghost" onClick={onLogin}>
+                  找回密码
+                </Button>
+              </CardFooter>
+            </Card>
+          </TabsContent>
+          <TabsContent value="password">
+            <Card>
+              <CardContent className="space-y-2 m-2">
+                <div className="space-y-1">
+                  <Label htmlFor="name">用户名</Label>
+                  <Input id="name" defaultValue="wzc" />
+                </div>
+                <div className="space-y-1">
+                  <Label htmlFor="username">电子邮箱</Label>
+                  <Input
+                    id="username"
+                    type="email"
+                    defaultValue="17673423423@qq.com"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <Label htmlFor="username">用户密码</Label>
+                  <Input
+                    id="username"
+                    type="password"
+                    defaultValue="@peduarte"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <Label htmlFor="username">再次确认密码</Label>
+                  <Input
+                    id="username"
+                    type="password"
+                    defaultValue="@peduarte"
+                  />
+                </div>
+              </CardContent>
+              <CardFooter>
+                <Button>注册</Button>
+              </CardFooter>
+            </Card>
+          </TabsContent>
+        </Tabs>
+      </DialogContent>
+    </Dialog>
+  )
 }

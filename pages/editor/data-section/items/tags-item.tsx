@@ -1,52 +1,59 @@
-import {FC, useState} from "react"
-import {ResumeItem, ResumeTags} from "@/types"
-import {get, set} from "lodash-es"
-import {useSnapshot} from "valtio"
+import { FC, useState } from "react"
+import { appStore } from "@/store"
+import { ResumeItem, ResumeTags } from "@/types"
+import { get, set } from "lodash-es"
+import { useSnapshot } from "valtio"
 
-import {ItemProps} from "../item-body"
-import {Icons} from "@/components/icons";
-import {appStore} from "@/store";
+import { Icons } from "@/components/icons"
+import { ItemProps } from "../item-body"
 
-export const TagsItem: FC<ItemProps> = ({itemKey}) => {
-  const {content} = useSnapshot<ResumeTags>(
+export const TagsItem: FC<ItemProps> = ({ itemKey }) => {
+  const { content } = useSnapshot<ResumeTags>(
     get(appStore.appModelWithReactive.data, itemKey)!
   )
 
-  const [isEditing, setIsEditing] = useState(false);
-  const [editIndex, setEditIndex] = useState(null);
-  const [editValue, setEditValue] = useState('');
-  const [newTagValue, setNewTagValue] = useState('');
+  const [isEditing, setIsEditing] = useState(false)
+  const [editIndex, setEditIndex] = useState(null)
+  const [editValue, setEditValue] = useState("")
+  const [newTagValue, setNewTagValue] = useState("")
 
-  const handleTagClick = (index:number) => {
-    setIsEditing(true);
-    setEditIndex(index);
-    setEditValue(content[index]);
+  const handleTagClick = (index: number) => {
+    setIsEditing(true)
+    setEditIndex(index)
+    setEditValue(content[index])
   }
 
   const handleInputChange = (event) => {
-    setEditValue(event.target.value);
+    setEditValue(event.target.value)
   }
 
   const handleInputBlur = () => {
     // Update the tag in the content array
-    set(appStore.appModelWithReactive.data, `${itemKey}.content[${editIndex}]`, editValue)
-    setIsEditing(false);
-    setEditIndex(null);
+    set(
+      appStore.appModelWithReactive.data,
+      `${itemKey}.content[${editIndex}]`,
+      editValue
+    )
+    setIsEditing(false)
+    setEditIndex(null)
   }
 
   const handleDelete = (index) => {
-
     // Remove the tag from the content array
-    (get(appStore.appModelWithReactive.data, `${itemKey}.content`)! as string[]).splice(index, 1);
+    ;(
+      get(appStore.appModelWithReactive.data, `${itemKey}.content`)! as string[]
+    ).splice(index, 1)
   }
 
   const handleNewTagChange = (event) => {
-    setNewTagValue(event.target.value);
+    setNewTagValue(event.target.value)
   }
 
   const handleAddTag = () => {
-    (get(appStore.appModelWithReactive.data, `${itemKey}.content`)! as string[]).push(newTagValue);
-    setNewTagValue('');
+    ;(
+      get(appStore.appModelWithReactive.data, `${itemKey}.content`)! as string[]
+    ).push(newTagValue)
+    setNewTagValue("")
   }
 
   return (
@@ -67,7 +74,9 @@ export const TagsItem: FC<ItemProps> = ({itemKey}) => {
           ) : (
             <>
               {item}
-              <button className="ml-2"  onClick={() => handleDelete(index)}><Icons.del/></button>
+              <button className="ml-2" onClick={() => handleDelete(index)}>
+                <Icons.del />
+              </button>
             </>
           )}
         </div>
@@ -79,7 +88,9 @@ export const TagsItem: FC<ItemProps> = ({itemKey}) => {
           onChange={handleNewTagChange}
           placeholder="输入新标签"
         />
-        <button onClick={handleAddTag}><Icons.plus/></button>
+        <button onClick={handleAddTag}>
+          <Icons.plus />
+        </button>
       </div>
     </div>
   )

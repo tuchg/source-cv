@@ -1,11 +1,11 @@
 import { FC } from "react"
-import {ResumeImage, ResumeItem} from "@/types"
+import { appStore } from "@/store"
+import { ResumeImage, ResumeItem } from "@/types"
 import { get, set } from "lodash-es"
 import { useSnapshot } from "valtio"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { ItemProps } from "../item-body"
-import {appStore} from "@/store";
 
 export const ImgItem: FC<ItemProps> = ({ itemKey }) => {
   const { content } = useSnapshot<ResumeImage>(
@@ -24,7 +24,11 @@ export const ImgItem: FC<ItemProps> = ({ itemKey }) => {
     if (file) {
       const reader = new FileReader()
       reader.onload = () => {
-        set(appStore.appModelWithReactive.data, itemKey + ".content", reader.result)
+        set(
+          appStore.appModelWithReactive.data,
+          itemKey + ".content",
+          reader.result
+        )
       }
       reader.readAsDataURL(file)
     }

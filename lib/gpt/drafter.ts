@@ -5,17 +5,10 @@ import {
   OutputFixingParser,
   StructuredOutputParser,
 } from "langchain/output_parsers"
-import {
-  ChatPromptTemplate,
-  HumanMessagePromptTemplate,
-  MessagesPlaceholder, PromptTemplate,
-  SystemMessagePromptTemplate,
-} from "langchain/prompts"
+import {PromptTemplate} from "langchain/prompts"
 import {z} from "zod"
 
-import {config} from "@/lib/gpt/index"
-import {BufferMemory} from "langchain/memory";
-import {translate} from "@/lib/gpt/translator";
+import {config} from "@/lib/gpt"
 
 const model = new OpenAI(
   {
@@ -44,8 +37,6 @@ Attentions:
 
 {format_instructions}`
 
-  // 1.The generated resume will be in ${lang}.
-
   const prompt = new PromptTemplate({
     template: systemTel,
     inputVariables: ["jobDesc"],
@@ -60,8 +51,6 @@ Attentions:
 
 
   const result = await chatChain.call({jobDesc})
-
-  // const xy = await translate(x, "English", "Chinese")
 
   console.log("result: ", result)
   return result.response as unknown as Partial<ResumeSchema>

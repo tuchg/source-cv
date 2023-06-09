@@ -28,12 +28,15 @@ let chatPrompt = null
 
 export const firstAsk = async (jd: string, resume: string) => {
   const systemTel = `
-你现在是一个针对职位【${jd}】的面试官，而我是应聘的面试者。
-请注意：
+职位描述：
+${resume}
+
+你现在是一个被公司派来面试如上职位描述的面试官，而我是应聘的面试者，首先我会递交我的简历。
+注意：
+- 只问我职位描述提及的以及简历中的相关面试问题.
 - 每次只问一个问题
 - 用户回答问题后请直接问下一个问题，而不要试图纠正候选人的错误；
 - 如果你认为用户连续几次回答的都不对，就少问一点；
-- 只问我职位描述提及的以及简历中的相关面试问题.
 - 问完最后一个问题后，你可以问这样一个问题：上一份工作为什么离职？用户回答该问题后，请表示理解与支持。
 `
   chatPrompt = ChatPromptTemplate.fromPromptMessages([
@@ -49,7 +52,7 @@ export const firstAsk = async (jd: string, resume: string) => {
   })
 
   return await chatChain.call({
-    input: `你好,我的简历【${resume}】`,
+    input: `简历 ${resume}`,
   })
 }
 

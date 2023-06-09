@@ -1,18 +1,18 @@
-import {useState} from "react"
-import {useMount} from "ahooks"
-import {CircleDot} from "lucide-react"
+import { useState } from "react"
+import { appStore } from "@/store"
+import { useMount } from "ahooks"
+import { CircleDot } from "lucide-react"
+import { useSnapshot } from "valtio"
 
-import {flattenResumeSchema} from "@/lib/resume"
-import {Button} from "@/components/ui/button"
-import {Label} from "@/components/ui/label"
-import {Textarea} from "@/components/ui/textarea"
-import {appStore} from "@/store";
-import {firstAsk, resp} from "@/lib/gpt/interviewer";
-import {useSnapshot} from "valtio";
+import { firstAsk, resp } from "@/lib/gpt/interviewer"
+import { flattenResumeSchema } from "@/lib/resume"
+import { Button } from "@/components/ui/button"
+import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
 
 export default function () {
   const [state, setState] = useState(true)
-  const {jd} = useSnapshot(appStore.appModelWithReactive.data.meta._extra)
+  const { jd } = useSnapshot(appStore.appModelWithReactive.data.meta._extra)
 
   return (
     <div className="container mx-auto m-1 w-full">
@@ -26,7 +26,7 @@ export default function () {
         <span className="block ml-2 font-bold text-gray-600">
           ChatGPT AI面试官
         </span>
-        <span className="absolute w-3 h-3 bg-green-600 rounded-full left-10 top-3"/>
+        <span className="absolute w-3 h-3 bg-green-600 rounded-full left-10 top-3" />
         <div className="absolute right-0 mr-3">
           <Button variant="outline" onClick={() => setState(false)}>
             {jd?.length && !state ? (
@@ -34,20 +34,20 @@ export default function () {
             ) : (
               <>
                 {" "}
-                <CircleDot size={14}/> <span>准备好了</span>
+                <CircleDot size={14} /> <span>准备好了</span>
               </>
             )}
           </Button>
         </div>
       </div>
-      {state ? <StartSection/> : <ChatSection/>}
+      {state ? <StartSection /> : <ChatSection />}
     </div>
   )
 }
 
 // @ts-ignore
 const StartSection = () => {
-  const {jd} = useSnapshot(appStore.appModelWithReactive.data.meta._extra)
+  const { jd } = useSnapshot(appStore.appModelWithReactive.data.meta._extra)
 
   return (
     <div className="grid w-full gap-3 pt-2">
@@ -56,7 +56,9 @@ const StartSection = () => {
       </div>
       <Textarea
         value={jd}
-        onChange={(e) => appStore.appModelWithReactive.data.meta._extra.jd = e.target.value}
+        onChange={(e) =>
+          (appStore.appModelWithReactive.data.meta._extra.jd = e.target.value)
+        }
         className="h-[40vh]"
         placeholder="Type your JD here."
         id="message-2"
@@ -72,10 +74,13 @@ const StartSection = () => {
 const ChatSection = () => {
   const [messages, setMessages] = useState([""])
   const [question, setQuestion] = useState("")
-  const {jd} = useSnapshot(appStore.appModelWithReactive.data.meta._extra)
+  const { jd } = useSnapshot(appStore.appModelWithReactive.data.meta._extra)
 
   useMount(async () => {
-    const res = await firstAsk(jd!, flattenResumeSchema(appStore.schemaModel.data))
+    const res = await firstAsk(
+      jd!,
+      flattenResumeSchema(appStore.schemaModel.data)
+    )
     setMessages([res.response])
   })
 
@@ -95,7 +100,11 @@ const ChatSection = () => {
               key={index}
               className={`flex ${index % 2 ? "justify-end" : "justify-start"}`}
             >
-              <div className="relative max-w-xl px-4 py-2 text-gray-700 rounded shadow">
+              <div
+                className={`relative max-w-xl px-4 py-2 text-gray-700 rounded  shadow ${
+                  index % 2 ? "" : "bg-gray-50"
+                }`}
+              >
                 <span className="block">{message}</span>
               </div>
             </li>
@@ -178,8 +187,7 @@ const ChatSection = () => {
             viewBox="0 0 20 20"
             fill="currentColor"
           >
-            <path
-              d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"/>
+            <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
           </svg>
         </Button>
       </div>

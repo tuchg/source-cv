@@ -1,25 +1,25 @@
-import {FC, useState} from "react"
-import {ResumeItem} from "@/types"
+import { FC, useState } from "react"
+import { appStore, curSection } from "@/store"
+import { ResumeItem } from "@/types"
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@radix-ui/react-accordion"
-import {get, set} from "lodash-es"
-import {CheckCheck, PlusSquare} from "lucide-react"
-import {useSnapshot} from "valtio"
+import { get, set } from "lodash-es"
+import { CheckCheck, PlusSquare } from "lucide-react"
+import { useSnapshot } from "valtio"
 
-import {Button} from "@/components/ui/button"
-import {ScrollArea} from "@/components/ui/scroll-area"
-import {Item} from "./item"
-import {ItemHeader} from "./item-header"
-import {randomId} from "@/lib/utils";
-import {appStore, curSection} from "@/store";
-import {Icons} from "@/components/icons";
+import { randomId } from "@/lib/utils"
+import { Icons } from "@/components/icons"
+import { Button } from "@/components/ui/button"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { Item } from "./item"
+import { ItemHeader } from "./item-header"
 
-export const DataSubSection: FC<DataSubSectionProps> = ({...props}) => {
-  const {curr} = useSnapshot(curSection)
+export const DataSubSection: FC<DataSubSectionProps> = ({ ...props }) => {
+  const { curr } = useSnapshot(curSection)
   const section = useSnapshot(get(appStore.appModelWithReactive.data, curr))
   const [accordionValue, setAccordionValue] = useState("0")
   const [isAdding, setIsAdding] = useState(false)
@@ -30,7 +30,7 @@ export const DataSubSection: FC<DataSubSectionProps> = ({...props}) => {
         onSave()
       } else {
         setIsAdding(true)
-        let cloneObject1 = cloneObject(section[0])! as ResumeItem;
+        let cloneObject1 = cloneObject(section[0])! as ResumeItem
         cloneObject1._extra.label = "新建项"
         cloneObject1._extra.id = randomId()
 
@@ -38,10 +38,9 @@ export const DataSubSection: FC<DataSubSectionProps> = ({...props}) => {
         //   ...section,
         //   cloneObject1,
         // ] as ResumeItem[])
-        let group = get(appStore.appModelWithReactive.data, curr);
-        group
-          .push(cloneObject1)
-        setAccordionValue((section.length).toString())
+        let group = get(appStore.appModelWithReactive.data, curr)
+        group.push(cloneObject1)
+        setAccordionValue(section.length.toString())
       }
     }
 
@@ -51,35 +50,46 @@ export const DataSubSection: FC<DataSubSectionProps> = ({...props}) => {
     }
 
     function onGroupOpenChange(groupKey: string) {
-      if (accordionValue===groupKey){
+      if (accordionValue === groupKey) {
         setAccordionValue("")
-      }else{
+      } else {
         setAccordionValue(groupKey)
       }
     }
 
-    function onGroupDel(groupKey: string,index:number) {
-      get(appStore.appModelWithReactive.data, curr)!.splice(index,1)
+    function onGroupDel(groupKey: string, index: number) {
+      get(appStore.appModelWithReactive.data, curr)!.splice(index, 1)
     }
 
     return (
-      <Accordion type="single" collapsible value={accordionValue} onValueChange={setAccordionValue}>
+      <Accordion
+        type="single"
+        collapsible
+        value={accordionValue}
+        onValueChange={setAccordionValue}
+      >
         {(section as ResumeItem[]).map((item, i) => {
           const groupKey = `${curr}[${i}]._extra`
           return (
             <AccordionItem value={i.toString()} key={groupKey}>
               <AccordionTrigger asChild>
-                <ItemHeader itemKey={groupKey} isGroup onOpenChange={() => onGroupOpenChange(i.toString())}
-                            onDel={() => onGroupDel(groupKey,i)}/>
+                <ItemHeader
+                  itemKey={groupKey}
+                  isGroup
+                  onOpenChange={() => onGroupOpenChange(i.toString())}
+                  onDel={() => onGroupDel(groupKey, i)}
+                />
               </AccordionTrigger>
-              <AccordionContent asChild>{renderItems(item, true, i)}</AccordionContent>
+              <AccordionContent asChild>
+                {renderItems(item, true, i)}
+              </AccordionContent>
             </AccordionItem>
           )
         })}
 
         <div className="flex mt-4">
           <Button className="flex-1" variant={"ghost"} onClick={onNewGroup}>
-            {isAdding ? <CheckCheck size={24}/> : <PlusSquare size={24}/>}
+            {isAdding ? <CheckCheck size={24} /> : <PlusSquare size={24} />}
           </Button>
         </div>
       </Accordion>
@@ -95,9 +105,8 @@ export const DataSubSection: FC<DataSubSectionProps> = ({...props}) => {
         .filter((key) => key !== "_extra")
         .sort((a, b) => item[a].sort - item[b].sort)
         .map((propKey, i) => {
-
           const itemKey = `${curr}${inGroup ? `[${index}]` : ""}.${propKey}`
-          return <Item className="col-span-2" key={itemKey} itemKey={itemKey}/>
+          return <Item className="col-span-2" key={itemKey} itemKey={itemKey} />
         })}
     </div>
   )

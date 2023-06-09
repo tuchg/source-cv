@@ -33,9 +33,9 @@ import {
   Trash2,
   Twitter,
   User,
+  Wand,
   Wand2,
   type Icon as LucideIcon,
-  Wand,
 } from "lucide-react"
 
 export type Icon = LucideIcon
@@ -69,7 +69,7 @@ export const Icons = {
   trans: Languages,
   more: MoreHorizontal,
   code: Code2,
-  wand:Wand2,
+  wand: Wand2,
   bot: Bot,
   date: Calendar,
   swap: ArrowLeftRight,

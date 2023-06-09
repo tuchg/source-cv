@@ -1,31 +1,31 @@
-import {AppResumeSchema, ResumeSchema} from "@/types"
-import {join, set} from "lodash-es"
-import {proxy, subscribe} from "valtio"
+import { appStore } from "@/store"
+import { AppResumeSchema, ResumeSchema } from "@/types"
+import { join, set } from "lodash-es"
+import { proxy, subscribe } from "valtio"
 
-import {initialValue} from "../store"
-import {fromApplication, intoApplication} from "./index"
-import {getResume, syncResumes} from "@/lib/resume/database";
-import {appStore} from "@/store";
+import { getResume, syncResumes } from "@/lib/resume/database"
+import { initialValue } from "../store"
+import { fromApplication, intoApplication } from "./index"
 
 export class ResumeModel {
   /**
    *  a reactive model of the application state
    */
-    // @ts-ignore
+  // @ts-ignore
   appModelWithReactive: { data: AppResumeSchema }
 
   /**
    *  a reactive model of the resume template
    *
    */
-    // @ts-ignore
+  // @ts-ignore
   schemaModel: { data: ResumeSchema }
 
   /**
    * a non-reactive model of the resume template
    */
 
-  opsLog: OpsLog = {kind: OpsKind.INIT, time: Date.now()}
+  opsLog: OpsLog = { kind: OpsKind.INIT, time: Date.now() }
 
   private static LOCAL_KEY = "local-resume"
   private static OPS_KEY = "ops-logs"
@@ -37,9 +37,8 @@ export class ResumeModel {
     } else {
       resume = JSON.parse(resume)
     }
-    this.appModelWithReactive = proxy({data: resume as AppResumeSchema})
-    this.schemaModel = proxy({data: {} as ResumeSchema})
-
+    this.appModelWithReactive = proxy({ data: resume as AppResumeSchema })
+    this.schemaModel = proxy({ data: {} as ResumeSchema })
 
     subscribe(this.appModelWithReactive, async (ops) => {
       // ops
@@ -54,7 +53,6 @@ export class ResumeModel {
 
     this.syncSchema(true)
   }
-
 
   static loadResume() {
     const data = localStorage.getItem(this.LOCAL_KEY)
@@ -74,7 +72,7 @@ export class ResumeModel {
   }
 
   async persist() {
-    this.opsLog = {...this.opsLog, time: Date.now()}
+    this.opsLog = { ...this.opsLog, time: Date.now() }
 
     localStorage.setItem(ResumeModel.OPS_KEY, JSON.stringify(this.opsLog))
     localStorage.setItem(
@@ -96,12 +94,13 @@ export interface OpsLog {
   time: number
 }
 
-
 export const takeResume = (id: string) => {
   appStore.appModelWithReactive.data = getResume(id)!
 }
 
 export const schemaToResume = () => {
   if (appStore.schemaModel.data)
-    appStore.appModelWithReactive.data = intoApplication(appStore.schemaModel.data)
+    appStore.appModelWithReactive.data = intoApplication(
+      appStore.schemaModel.data
+    )
 }

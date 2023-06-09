@@ -1,22 +1,23 @@
-import {useEffect, useRef, useState} from "react"
-import {useTemplate} from "@/hooks/use-template"
-import {proxy, useSnapshot} from "valtio"
-import {appStore, previewSectionSize, settingsStore} from "@/store";
-import {tryTemplate} from "@/lib/resume/database";
-import {drawHTML} from "rasterizehtml";
+import { useEffect, useRef, useState } from "react"
+import { useTemplate } from "@/hooks/use-template"
+import { appStore, previewSectionSize, settingsStore } from "@/store"
+import { drawHTML } from "rasterizehtml"
+import { proxy, useSnapshot } from "valtio"
+
+import { tryTemplate } from "@/lib/resume/database"
 
 const width = 794
 const height = 1123
 const ori = Math.sqrt(width ** 2 + height ** 2)
 
 export const PreviewSection = () => {
-  const {template} = useSnapshot(settingsStore)
+  const { template } = useSnapshot(settingsStore)
 
-  const {html} = useTemplate(template)
+  const { html } = useTemplate(template)
 
-  const {data} = useSnapshot(appStore.schemaModel)
+  const { data } = useSnapshot(appStore.schemaModel)
 
-  const {width: secWidth, height: secHeight} = useSnapshot(previewSectionSize)
+  const { width: secWidth, height: secHeight } = useSnapshot(previewSectionSize)
 
   const [scale, setScale] = useState(0.8)
   const wrapperRef = useRef<HTMLDivElement>(
@@ -35,26 +36,25 @@ export const PreviewSection = () => {
 
   const iframeRef = useRef<HTMLIFrameElement>(null)
 
-
   useEffect(() => {
     if (iframeRef) {
+      // TODO: When the result is too large, it will exceed the size limit of the local storage.
       console.log("通知更新")
       console.log("开始截图")
-      var canvas = document.getElementById("canvas");
+      const canvas = document.getElementById("canvas")
       drawHTML(html, canvas as HTMLCanvasElement).then(function (result) {
         tryTemplate(template, result.image.src)
       })
 
-        // html2canvas(iframeRef.current!.contentDocument.body,
-        //   {
-        //     // useCORS: true,
-        //     allowTaint: true,
-        //   }
-        // )
-        //   .then(canvas => {
-        //     tryTemplate(template, canvas.toDataURL())
-        //   })
-
+      // html2canvas(iframeRef.current!.contentDocument.body,
+      //   {
+      //     // useCORS: true,
+      //     allowTaint: true,
+      //   }
+      // )
+      //   .then(canvas => {
+      //     tryTemplate(template, canvas.toDataURL())
+      //   })
     }
   }, [html])
 

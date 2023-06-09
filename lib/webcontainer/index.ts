@@ -1,8 +1,8 @@
-import {ResumeSchema} from "@/types"
-import {WebContainer} from "@webcontainer/api"
+import { terminalChannel } from "@/store"
+import { ResumeSchema } from "@/types"
+import { WebContainer } from "@webcontainer/api"
 
-import {pipeToConsole} from "./console"
-import {terminalChannel} from "@/store";
+import { pipeToConsole } from "./console"
 
 let container: WebContainer
 let themeStates: Map<string, boolean> = new Map()
@@ -75,7 +75,6 @@ export async function buildResume(theme: string) {
   }
   return ""
 }
-
 
 /** @satisfies {import('@webcontainer/api').FileSystemTree} */
 const files = {

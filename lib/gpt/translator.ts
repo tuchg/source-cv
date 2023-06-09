@@ -1,9 +1,14 @@
-import {ResumeSchema} from "@/types"
-import {ChatPromptTemplate, HumanMessagePromptTemplate, SystemMessagePromptTemplate} from "langchain/prompts";
-import {LLMChain} from "langchain";
-import {OpenAI} from "langchain/llms/openai";
-import {config} from "@/lib/gpt/index";
-import {fixParser} from "@/lib/gpt/drafter";
+import { ResumeSchema } from "@/types"
+import { LLMChain } from "langchain"
+import { OpenAI } from "langchain/llms/openai"
+import {
+  ChatPromptTemplate,
+  HumanMessagePromptTemplate,
+  SystemMessagePromptTemplate,
+} from "langchain/prompts"
+
+import { fixParser } from "@/lib/gpt/drafter"
+import { config } from "@/lib/gpt/index"
 
 export const translator = (
   resume: ResumeSchema,
@@ -19,7 +24,7 @@ const model = new OpenAI(
     cache: true,
     // streaming: true,
   },
-  {basePath: config.basePath}
+  { basePath: config.basePath }
 )
 
 const translationPrompt = ChatPromptTemplate.fromPromptMessages([
@@ -27,18 +32,22 @@ const translationPrompt = ChatPromptTemplate.fromPromptMessages([
     "You are a helpful assistant that translates {input_language} to {output_language}."
   ),
   HumanMessagePromptTemplate.fromTemplate("{text}"),
-]);
+])
 
-export const translate = async (text: string, input_language: string, output_language: string) => {
+export const translate = async (
+  text: string,
+  input_language: string,
+  output_language: string
+) => {
   const chain = new LLMChain({
     prompt: translationPrompt,
     llm: model,
-  });
+  })
   const result = await chain.call({
     text,
     input_language,
     output_language,
-  });
-  console.log("translate result:", result);
-  return result.output;
+  })
+  console.log("translate result:", result)
+  return result.output
 }

@@ -1,36 +1,32 @@
-import {FC} from "react"
-import {appStore, settingsStore} from "@/store"
-import {ResumeItem, ResumeTextArea} from "@/types"
-import {get, set} from "lodash-es"
-import {proxy, useSnapshot} from "valtio"
+import { FC } from "react"
+import { useRewrite } from "@/app/api/space"
+import { appStore, settingsStore } from "@/store"
+import { ResumeItem, ResumeTextArea } from "@/types"
+import { get, set } from "lodash-es"
+import { CircleLoader, RingLoader } from "react-spinners"
+import { proxy, useSnapshot } from "valtio"
 
-import {Icons} from "@/components/icons"
-import {Button} from "@/components/ui/button"
-import {Textarea} from "@/components/ui/textarea"
-import {ItemProps} from "../item-body"
-import {CircleLoader, RingLoader} from "react-spinners";
-import {useRewrite} from "@/app/api/space";
+import { Icons } from "@/components/icons"
+import { Button } from "@/components/ui/button"
+import { Textarea } from "@/components/ui/textarea"
+import { ItemProps } from "../item-body"
 
-export const TextareaItem: FC<ItemProps> = ({itemKey}) => {
-  const {content} = useSnapshot<ResumeTextArea>(
+export const TextareaItem: FC<ItemProps> = ({ itemKey }) => {
+  const { content } = useSnapshot<ResumeTextArea>(
     get(appStore.appModelWithReactive.data, itemKey)!
   )
 
-  const {trigger, isMutating} = useRewrite()
+  const { trigger, isMutating } = useRewrite()
 
   const onRewrite = async () => {
     const result = await trigger({
       text: content,
       jd: appStore.appModelWithReactive.data.meta._extra.jd ?? "",
-      lang: settingsStore.lang
+      lang: settingsStore.lang,
     })
 
     console.log("润色结果：", result)
-    set(
-      appStore.appModelWithReactive.data,
-      `${itemKey}.content`,
-      result
-    )
+    set(appStore.appModelWithReactive.data, `${itemKey}.content`, result)
   }
 
   return (
@@ -48,11 +44,7 @@ export const TextareaItem: FC<ItemProps> = ({itemKey}) => {
       />
       <div className="absolute top-1 right-1 flex flex-row">
         <Button onClick={onRewrite} size="sm" variant="ghost">
-          {
-            isMutating ?
-              <RingLoader size={20}/> :
-              <Icons.wand size={18}/>
-          }
+          {isMutating ? <RingLoader size={20} /> : <Icons.wand size={18} />}
         </Button>
       </div>
     </div>

@@ -5,7 +5,8 @@ import {
   ResumeSchema,
   SectionExtra,
 } from "@/types"
-import {randomId} from "@/lib/utils";
+
+import { randomId } from "@/lib/utils"
 
 const newItem = (prop?: Partial<ResumeItem>) =>
   ({
@@ -68,11 +69,12 @@ export function intoApplication(data: ResumeSchema): AppResumeSchema {
           if (item.hasOwnProperty("institution")) {
             label += ` ${item.institution}`
           }
-          return {...intoApplication(item), _extra: newGroupExtra({label})}
+          return { ...intoApplication(item), _extra: newGroupExtra({ label }) }
         })
       } else {
         content = {
-          kind: key === 'highlights' ? ResumeItemKind.List : ResumeItemKind.Tags,
+          kind:
+            key === "highlights" ? ResumeItemKind.List : ResumeItemKind.Tags,
           bindingKey: key,
           content,
         }
@@ -84,7 +86,7 @@ export function intoApplication(data: ResumeSchema): AppResumeSchema {
       } else {
         _extra = newGroupExtra()
       }
-      content = {...intoApplication(content), _extra}
+      content = { ...intoApplication(content), _extra }
     } else {
       let kind: ResumeItemKind
       let sort = i
@@ -155,7 +157,7 @@ export function fromApplication(data: AppResumeSchema): ResumeSchema {
       } else if (typeof value === "object") {
         value = value.kind ? value.content : fromApplication(value)
       }
-      return {...acc, [key]: value.content ?? value}
+      return { ...acc, [key]: value.content ?? value }
     }, {} as ResumeSchema)
 }
 
@@ -180,6 +182,3 @@ export function flattenResumeSchema(jsonObj: Record<any, any>, prefix = "") {
 
   return flatJSON
 }
-
-
-

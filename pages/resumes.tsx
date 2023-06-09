@@ -1,16 +1,21 @@
-import {useState} from "react"
+import { useState } from "react"
 import {
   useDelResume,
-  useDupResume, useNewAIResume,
+  useDupResume,
+  useNewAIResume,
   useNewResume,
   useResumes,
 } from "@/app/api/space"
-import {PlusCircle} from "lucide-react"
-import {useNavigate} from "react-router"
+import { settingsStore } from "@/store"
+import dayjs from "dayjs"
+import { PlusCircle } from "lucide-react"
+import { useNavigate } from "react-router"
+import { BeatLoader } from "react-spinners"
 
-import {saveImage} from "@/lib/resume/database"
-import {cn, randomId} from "@/lib/utils"
-import {Icons} from "@/components/icons"
+import { saveImage } from "@/lib/resume/database"
+import { takeResume } from "@/lib/resume/resume-model"
+import { cn, randomId } from "@/lib/utils"
+import { Icons } from "@/components/icons"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -21,39 +26,36 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
-import {Button} from "@/components/ui/button"
-import {Card} from "@/components/ui/card"
-import {Checkbox} from "@/components/ui/checkbox"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Button } from "@/components/ui/button"
+import { Card } from "@/components/ui/card"
+import { Checkbox } from "@/components/ui/checkbox"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import {Label} from "@/components/ui/label"
-import {ScrollArea, ScrollBar} from "@/components/ui/scroll-area"
-import {Separator} from "@/components/ui/separator"
-import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription, DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger
-} from "@/components/ui/dialog";
-import {Input} from "@/components/ui/input";
-import {Textarea} from "@/components/ui/textarea";
-import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
-import dayjs from "dayjs";
-import {takeResume} from "@/lib/resume/resume-model";
-import {BeatLoader} from "react-spinners";
-import {settingsStore} from "@/store";
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
+import { Separator } from "@/components/ui/separator"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Textarea } from "@/components/ui/textarea"
 
 export const MyResumes = () => {
-  const {data: resumes} = useResumes("简体中文")
-  const {trigger: delResume} = useDelResume()
-  const {trigger: dupResume} = useDupResume()
+  const { data: resumes } = useResumes("简体中文")
+  const { trigger: delResume } = useDelResume()
+  const { trigger: dupResume } = useDupResume()
 
   const [del, setDel] = useState(false)
   const [add, setAdd] = useState(false)
@@ -73,9 +75,8 @@ export const MyResumes = () => {
   const onOk = async () => {
     setDel(false)
     setDeepDel(false)
-    await delResume({id: selected})
+    await delResume({ id: selected })
   }
-
 
   const onEdit = (id: any) => {
     takeResume(id)
@@ -83,14 +84,13 @@ export const MyResumes = () => {
   }
 
   const onDup = async (id: any, lang?: string) => {
-    await dupResume({id, lang})
+    await dupResume({ id, lang })
   }
 
   const onPrint = async (id: any) => {
     alert("暂不支持")
   }
 
-  // @ts-ignore
   return (
     <>
       <div className="h-full px-4 py-6 lg:px-8">
@@ -106,7 +106,7 @@ export const MyResumes = () => {
               </TabsTrigger>
             </TabsList>
             <div className="ml-auto mr-4">
-              <NewResumeBtn/>
+              <NewResumeBtn />
             </div>
           </div>
           <TabsContent value="music" className="border-none p-0 outline-none">
@@ -120,11 +120,10 @@ export const MyResumes = () => {
                 </p>
               </div>
             </div>
-            <Separator className="my-4"/>
+            <Separator className="my-4" />
             <div className="relative">
               <ScrollArea>
-                <div
-                  className="grid grid-flow-row grid-cols-4 2xl:grid-cols-5  lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2  gap-5 row-auto pb-4 place-self-center place-items-center place-content-center">
+                <div className="grid grid-flow-row grid-cols-4 2xl:grid-cols-5  lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2  gap-5 row-auto pb-4 place-self-center place-items-center place-content-center">
                   {
                     // @ts-ignore
                     resumes.map((resume) => (
@@ -154,13 +153,15 @@ export const MyResumes = () => {
 
                           <div className="flex justify-between flex-row items-center">
                             <Label className="text-xs text-muted-foreground">
-                              {dayjs(resume.update_at).format("YYYY-MM-DD hh:mm:ss")}
+                              {dayjs(resume.update_at).format(
+                                "YYYY-MM-DD hh:mm:ss"
+                              )}
                             </Label>
                             <Button
                               onClick={() => onEdit(resume.id)}
                               variant="ghost"
                             >
-                              <Icons.edit size={16}/>
+                              <Icons.edit size={16} />
                             </Button>
 
                             <DropdownMenu>
@@ -169,7 +170,7 @@ export const MyResumes = () => {
                                   // onClick={onDel}
                                   variant="ghost"
                                 >
-                                  <Icons.more size={16}/>
+                                  <Icons.more size={16} />
                                 </Button>
                               </DropdownMenuTrigger>
                               <DropdownMenuContent>
@@ -182,19 +183,19 @@ export const MyResumes = () => {
                                 <DropdownMenuItem
                                   onClick={() => onPrint(resume.id)}
                                 >
-                                  <Icons.print size={16}/>
+                                  <Icons.print size={16} />
                                   <Label className="ml-1">打印</Label>
                                 </DropdownMenuItem>
                                 <DropdownMenuItem
                                   onClick={() => onDup(resume.id)}
                                 >
-                                  <Icons.copy size={16}/>
+                                  <Icons.copy size={16} />
                                   <Label className="ml-1">复制</Label>
                                 </DropdownMenuItem>
                                 <DropdownMenuItem
                                   onClick={() => onDel(resume.id)}
                                 >
-                                  <Icons.del size={16}/>
+                                  <Icons.del size={16} />
                                   <Label className="ml-1">删除</Label>
                                 </DropdownMenuItem>
                               </DropdownMenuContent>
@@ -205,7 +206,7 @@ export const MyResumes = () => {
                     ))
                   }
                 </div>
-                <ScrollBar orientation="vertical"/>
+                <ScrollBar orientation="vertical" />
               </ScrollArea>
             </div>
           </TabsContent>
@@ -224,7 +225,7 @@ export const MyResumes = () => {
                 </p>
               </div>
             </div>
-            <Separator className="my-4"/>
+            <Separator className="my-4" />
           </TabsContent>
         </Tabs>
       </div>
@@ -265,17 +266,18 @@ export const MyResumes = () => {
   )
 }
 
-
 const NewResumeBtn = () => {
-  const {trigger: newResume} = useNewResume()
-  const {trigger: newAIResume, isMutating: isAiMutating} = useNewAIResume()
+  const { trigger: newResume } = useNewResume()
+  const { trigger: newAIResume, isMutating: isAiMutating } = useNewAIResume()
   // const navigate = useNavigate()
 
   const [desc, setDesc] = useState("")
   const [name, setName] = useState("")
   const [cover, setCover] = useState("")
   const [lang, setLang] = useState("简体中文")
-  const [jobDesc, setJobDesc] = useState("Java 软件研发工程师 3-5年\n职责描述：\n1.根据MOA/WMS/SAP等业务系统的需求报告，梳理和设计系统开发点；\n2.在现有微服务架构上带领开发团队完成各业务模块架构和功能的设计；\n3.参与系统代码的设计与开发，支持在关键技术点上进行指导和把关，并对代码进行定期review，保证代码质量；\n4.支持系统代码的调试和上线部署，处理线上版本bug，支持系统的推广实施；\n5.配合项目的整体计划，对技术人员进行技术培训和指导。\n任职要求：\n1.全日制本科及以上学历，计算机、机械设计制造、电子工程、数学及应用数学专业优先；\n2.3年以上JAVA经验，有MOA/WMS/SAP等业务系统开发经验，作为主要设计人员参与过两个以上系统开发项目；\n3.精通JAVA语言，熟练掌握HTML/CSS/JS，熟悉jQuery、bootstrap等前端框架，了解webservice相关编程技术；\n4.熟练使用eclipse、Idea开发工具，掌握Tomcat等主流J2EE应用服务器一种或多种；精通Nginx部署、配置、优化；\n5.熟悉主流设计库设计与优化，能熟练使用SQL语言编程；至少精通一种UML建模工具。")
+  const [jobDesc, setJobDesc] = useState(
+    "Java 软件研发工程师 3-5年\n职责描述：\n1.根据MOA/WMS/SAP等业务系统的需求报告，梳理和设计系统开发点；\n2.在现有微服务架构上带领开发团队完成各业务模块架构和功能的设计；\n3.参与系统代码的设计与开发，支持在关键技术点上进行指导和把关，并对代码进行定期review，保证代码质量；\n4.支持系统代码的调试和上线部署，处理线上版本bug，支持系统的推广实施；\n5.配合项目的整体计划，对技术人员进行技术培训和指导。\n任职要求：\n1.全日制本科及以上学历，计算机、机械设计制造、电子工程、数学及应用数学专业优先；\n2.3年以上JAVA经验，有MOA/WMS/SAP等业务系统开发经验，作为主要设计人员参与过两个以上系统开发项目；\n3.精通JAVA语言，熟练掌握HTML/CSS/JS，熟悉jQuery、bootstrap等前端框架，了解webservice相关编程技术；\n4.熟练使用eclipse、Idea开发工具，掌握Tomcat等主流J2EE应用服务器一种或多种；精通Nginx部署、配置、优化；\n5.熟悉主流设计库设计与优化，能熟练使用SQL语言编程；至少精通一种UML建模工具。"
+  )
   const [open, setOpen] = useState(false)
 
   const handleFileSelected = (event: any) => {
@@ -308,8 +310,8 @@ const NewResumeBtn = () => {
       preview: newID,
       lang,
       jd: jobDesc,
-    };
-    settingsStore.lang = lang;
+    }
+    settingsStore.lang = lang
 
     if (isAi) {
       await newAIResume(args)
@@ -323,63 +325,88 @@ const NewResumeBtn = () => {
 
   const onAINew = () => onNew(null, true)
 
-  return <Dialog open={open} onOpenChange={setOpen}>
-    <DialogTrigger asChild>
-      <Button>
-        <PlusCircle className="mr-2 h-4 w-4"/>
-        新建
-      </Button>
-    </DialogTrigger>
-    <DialogContent>
-      <DialogHeader>
-        <DialogTitle>新建简历</DialogTitle>
-        <DialogDescription>
-          新建岗位，选择其语言版本、简历名称、简历描述
-        </DialogDescription>
-      </DialogHeader>
-      <div className="grid gap-4 py-4">
-        <div className="grid grid-cols-4 items-center gap-4">
-          <Label htmlFor="name" className="text-right">
-            简历名
-          </Label>
-          <Input id="name" value={name} onChange={(e) => setName(e.target.value)} className="col-span-3"/>
-        </div>
-        <div className="grid grid-cols-4 items-center gap-4">
-          <Label htmlFor="username" className="text-right">
-            简历概要
-          </Label>
-          <Textarea id="username" value={desc} onChange={(e) => setDesc(e.target.value)} className="col-span-3"/>
-        </div>
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button>
+          <PlusCircle className="mr-2 h-4 w-4" />
+          新建
+        </Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>新建简历</DialogTitle>
+          <DialogDescription>
+            新建岗位，选择其语言版本、简历名称、简历描述
+          </DialogDescription>
+        </DialogHeader>
+        <div className="grid gap-4 py-4">
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="name" className="text-right">
+              简历名
+            </Label>
+            <Input
+              id="name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="col-span-3"
+            />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="username" className="text-right">
+              简历概要
+            </Label>
+            <Textarea
+              id="username"
+              value={desc}
+              onChange={(e) => setDesc(e.target.value)}
+              className="col-span-3"
+            />
+          </div>
 
-        <div className="grid grid-cols-4 items-center gap-4">
-          <Label htmlFor="jd" className="text-right">
-            面向职位
-          </Label>
-          <Textarea id="jd" value={jobDesc} onChange={(e) => setJobDesc(e.target.value)} className="col-span-3"/>
-        </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="jd" className="text-right">
+              面向职位
+            </Label>
+            <Textarea
+              id="jd"
+              value={jobDesc}
+              onChange={(e) => setJobDesc(e.target.value)}
+              className="col-span-3"
+            />
+          </div>
 
-        <div className="grid grid-cols-4 items-center gap-4">
-          <Label htmlFor="username" className="text-right">
-            封面图
-          </Label>
-          <Avatar className="h-[20rem] w-[15rem] rounded-none" onClick={handleAvatarClick}>
-            <AvatarImage className="rounded-none" src={cover}/>
-            <AvatarFallback className="rounded-none">CN</AvatarFallback>
-          </Avatar>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="username" className="text-right">
+              封面图
+            </Label>
+            <Avatar
+              className="h-[20rem] w-[15rem] rounded-none"
+              onClick={handleAvatarClick}
+            >
+              <AvatarImage className="rounded-none" src={cover} />
+              <AvatarFallback className="rounded-none">CN</AvatarFallback>
+            </Avatar>
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="name" className="text-right">
+              语言
+            </Label>
+            <Input
+              id="name"
+              value={lang}
+              className="col-span-3"
+              onChange={(e) => setLang(e.target.value)}
+            />
+          </div>
         </div>
-        <div className="grid grid-cols-4 items-center gap-4">
-          <Label htmlFor="name" className="text-right">
-            语言
-          </Label>
-          <Input id="name" value={lang} className="col-span-3" onChange={(e) => setLang(e.target.value)}/>
-        </div>
-      </div>
-      <DialogFooter>
-        <Button onClick={onAINew} variant="secondary">{
-          isAiMutating ? <BeatLoader className="mr-2 h-4 w-4"/> : "AI生成"
-        }</Button>
-        <Button onClick={onNew}>确认</Button>
-      </DialogFooter>
-    </DialogContent>
-  </Dialog>
+        <DialogFooter>
+          <Button onClick={onAINew} variant="secondary">
+            {isAiMutating ? <BeatLoader className="mr-2 h-4 w-4" /> : "AI生成"}
+          </Button>
+          <Button onClick={onNew}>确认</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  )
 }

@@ -23,7 +23,7 @@ export type AppResumeSchema = IntoApplicationSchema<
     _extra: AppResumeDBMeta
   }
 }
-export type AppResumeDBMeta={
+export type AppResumeDBMeta = {
   id: string
   title: string
   description: string

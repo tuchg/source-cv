@@ -1,17 +1,16 @@
 import { DataManager } from "@/pages/data-manager"
 import ChatSection from "@/pages/editor/chat-section"
+import { CodeSection } from "@/pages/editor/code-section"
 import { DataSection } from "@/pages/editor/data-section"
 import GptSection from "@/pages/editor/gpt-section"
 import { Guide } from "@/pages/guide"
 import Home from "@/pages/home"
 import { MyResumes } from "@/pages/resumes"
 import { Templates } from "@/pages/templates"
-import { Theme } from "@/pages/theme"
 import { UserSpace } from "@/pages/user-space"
 import { Route, RouteObject, Routes } from "react-router"
 
 import { EditorLayout } from "@/components/editor/layout"
-import {CodeSection} from "@/pages/code-section";
 
 export const routes: RouteObject[] = [
   {
@@ -41,10 +40,6 @@ export const routes: RouteObject[] = [
       {
         path: "templates",
         element: <Templates />,
-      },
-      {
-        path: "theme",
-        element: <Theme />,
       },
       // {path: "*", element: <NoMatch/>},
     ],

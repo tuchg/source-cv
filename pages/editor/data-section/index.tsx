@@ -7,7 +7,6 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { DataSubSection } from "./sub-section"
 
-
 export const DataSection = () => {
   const { t } = useTranslation()
 

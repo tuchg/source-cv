@@ -1,17 +1,24 @@
-# Roadmap
-
 # SourceResume
+
+## Development
+
+### setup
+
+Firstly, we should create a `.env` file in the root directory of project repository and write the following content into
+it.
+
+```
+OPENAI_API_BASE="https://api.openai.com/v1"
+OPENAI_API_KEY="sk-XXXX"
+```
+
+### run
+
+```bash
+pnpm install
+pnpm run dev
+```
 
 ## Thanks
 
-[Resume-Schema](https://github.com/jsonresume/resume-schema)
-
-
-
-| 字段名 | 类型 | 描述 |
-| --- | --- | --- |
-| id | TEXT | 主键 |
-| resume_id | TEXT | 非空，外键，引用 RESUME_META 表的 id |
-| image | TEXT | 非空 |
-| create_at | DATETIME |  |
-| update_at | DATETIME |  |
+- [Resume-Schema](https://github.com/jsonresume/resume-schema)
