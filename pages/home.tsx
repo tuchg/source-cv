@@ -81,7 +81,7 @@ export default function Home() {
             </div>
           </div>
           <div className="hidden sm:mt-10 sm:flex lg:mt-0 lg:grow lg:basis-0 lg:justify-end">
-            <LoginPanel />
+             测试
           </div>
         </div>
       </header>
@@ -132,102 +132,3 @@ export default function Home() {
   )
 }
 
-function LoginPanel() {
-  const navigate = useNavigate()
-  const [name, setName] = useState("test")
-  const onLogin = () => {
-    navigate("/space", { state: { name } })
-    localStorage.setItem("user-name", name)
-  }
-
-  return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Link
-          className="inline-flex justify-center rounded-2xl bg-blue-600 p-4 text-base font-semibold text-white hover:bg-blue-500 focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 active:text-white/70"
-          // to="/space"
-        >
-          登录
-        </Link>
-      </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>用户登录</DialogTitle>
-          <DialogDescription>系统门户</DialogDescription>
-        </DialogHeader>
-        <Tabs defaultValue="account" className="">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="account">登录</TabsTrigger>
-            <TabsTrigger value="password">注册</TabsTrigger>
-          </TabsList>
-          <TabsContent value="account">
-            <Card>
-              <CardContent className="space-y-2 m-2">
-                <div className="space-y-1">
-                  <Label htmlFor="name">用户名</Label>
-                  <Input
-                    id="name"
-                    defaultValue="test"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                  />
-                </div>
-                <div className="space-y-1">
-                  <Label htmlFor="username">用户密码</Label>
-                  <Input
-                    id="username"
-                    type="password"
-                    defaultValue="@peduarte"
-                  />
-                </div>
-              </CardContent>
-              <CardFooter>
-                <Button onClick={onLogin}>登录</Button>
-                <Button variant="ghost" onClick={onLogin}>
-                  找回密码
-                </Button>
-              </CardFooter>
-            </Card>
-          </TabsContent>
-          <TabsContent value="password">
-            <Card>
-              <CardContent className="space-y-2 m-2">
-                <div className="space-y-1">
-                  <Label htmlFor="name">用户名</Label>
-                  <Input id="name" defaultValue="wzc" />
-                </div>
-                <div className="space-y-1">
-                  <Label htmlFor="username">电子邮箱</Label>
-                  <Input
-                    id="username"
-                    type="email"
-                    defaultValue="17673423423@qq.com"
-                  />
-                </div>
-                <div className="space-y-1">
-                  <Label htmlFor="username">用户密码</Label>
-                  <Input
-                    id="username"
-                    type="password"
-                    defaultValue="@peduarte"
-                  />
-                </div>
-                <div className="space-y-1">
-                  <Label htmlFor="username">再次确认密码</Label>
-                  <Input
-                    id="username"
-                    type="password"
-                    defaultValue="@peduarte"
-                  />
-                </div>
-              </CardContent>
-              <CardFooter>
-                <Button>注册</Button>
-              </CardFooter>
-            </Card>
-          </TabsContent>
-        </Tabs>
-      </DialogContent>
-    </Dialog>
-  )
-}

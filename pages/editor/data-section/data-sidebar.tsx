@@ -121,13 +121,13 @@ export const DataSidebar = () => {
       </ScrollArea>
 
       <Separator />
-      {/*<Button*/}
-      {/*  variant="ghost"*/}
-      {/*  className="p-0 flex flex-col justify-between space-y-1 items-center justify-self-end"*/}
-      {/*>*/}
-      {/*  <Icons.plus/>*/}
-      {/*  <Label className="pt-1">自定义</Label>*/}
-      {/*</Button>*/}
+      <Button
+        variant="ghost"
+        className="p-0 flex flex-col justify-between space-y-1 items-center justify-self-end"
+      >
+        <Icons.plus/>
+        <Label className="pt-1">自定义</Label>
+      </Button>
       <Button
         variant="ghost"
         className="p-0 flex flex-col justify-between space-y-1 items-center justify-self-end"
