@@ -33,7 +33,9 @@ export const ItemHeader: FC<ItemHeaderProps> = forwardRef(
             </Button>
           </div>
         ) : (
-          <Label className="capitalize text-md">{label ?? t(bindingKey)}</Label>
+          <Label className="capitalize text-md">
+            {label ?? t(`items.${bindingKey}`)}
+          </Label>
         )}
         {isGroup && <Separator />}
       </div>
