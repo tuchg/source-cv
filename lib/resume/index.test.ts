@@ -1,7 +1,7 @@
+import { initialValue } from "@/services/data"
 import { isObject } from "lodash-es"
 import { describe, expect, it } from "vitest"
 
-import { initialValue } from "../store"
 import { flattenResumeSchema, fromApplication, intoApplication } from "./index"
 
 describe("intoApplication", () => {

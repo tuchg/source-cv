@@ -19,6 +19,6 @@ pnpm install
 pnpm run dev
 ```
 
-## Thanks
+## Credits
 
 - [Resume-Schema](https://github.com/jsonresume/resume-schema)

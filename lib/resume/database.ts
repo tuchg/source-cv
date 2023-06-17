@@ -1,10 +1,10 @@
-import {AppResumeDBMeta, AppResumeSchema} from "@/types"
+import { AppResumeDBMeta, AppResumeSchema } from "@/types"
 import dayjs from "dayjs"
-import {get, set} from "lodash-es"
+import { get, set } from "lodash-es"
 
-import {translator} from "@/lib/gpt/translator"
-import {fromApplication, intoApplication} from "@/lib/resume/index"
-import {randomId} from "@/lib/utils"
+import { translator } from "@/lib/gpt/translator"
+import { fromApplication, intoApplication } from "@/lib/resume/index"
+import { randomId } from "@/lib/utils"
 
 /**
  * TODO: temporary database
@@ -49,7 +49,7 @@ export const saveResume = (
   const index = resumes.findIndex(
     (item) => item.meta._extra.id === resume.meta._extra.id
   )
-  resume.meta._extra = {...resume.meta._extra, ...arg}
+  resume.meta._extra = { ...resume.meta._extra, ...arg }
 
   syncResumeAssign(resume)
   if (index === -1) {
@@ -106,8 +106,6 @@ export const dupResume = (id: number, lang?: string) => {
       resumes.push(resume)
     }
   }
-  resumes
-
   localStorage.setItem(resumesKEY, JSON.stringify(resumes))
 }
 
@@ -160,13 +158,13 @@ export const fetchResumesDB = (): DBItem[] => {
         switch (key) {
           case "basics":
             Object.keys(item[key]).length > 0 &&
-            result.push({
-              ...r,
-              id: item[key]._extra.id,
-              name: item[key].name.content,
-              desc: item[key].label.content,
-              assign: item[key]._extra.assign,
-            })
+              result.push({
+                ...r,
+                id: item[key]._extra.id,
+                name: item[key].name.content,
+                desc: item[key].label.content,
+                assign: item[key]._extra.assign,
+              })
             break
           case "work":
             item[key].forEach((work) => {
@@ -316,7 +314,7 @@ export interface DBItem {
 
 export const reassignToResume = (itemIds: string[], resumeIds: string[]) => {
   itemIds.forEach((itemId) => {
-    const {path, data: item} = findItemAndOwner(itemId)
+    const { path, data: item } = findItemAndOwner(itemId)
     item._extra.assign = resumeIds
 
     const resumes = resumesDB()
@@ -351,7 +349,7 @@ export const reassignToResume = (itemIds: string[], resumeIds: string[]) => {
 export const copyAssignToResume = (itemIds: string[], resumeIds: string[]) => {
   console.log(itemIds)
   itemIds.forEach((itemId) => {
-    const {path, data: item, owners} = findItemAndOwner(itemId)
+    const { path, data: item, owners } = findItemAndOwner(itemId)
     const resumes = resumesDB()
     resumes.map((r) => {
       if (resumeIds.includes(r.meta._extra.id)) {
@@ -433,7 +431,7 @@ export const findItemAndOwner = (id: string) => {
       })
     }
   })
-  return {path, data, owners}
+  return { path, data, owners }
 }
 
 export const syncChangeToResumes = (changed, resumeIds) => {
@@ -481,11 +479,10 @@ export const tryTemplate = (templateName: string, templatePreview: string) => {
 }
 
 export const listMyTemplates = () => {
-  return templatesDB()
-    .map((t) => {
-      t.preview = localStorage.getItem(t.name)
-      return t
-    })
+  return templatesDB().map((t) => {
+    t.preview = localStorage.getItem(t.name)
+    return t
+  })
 }
 
 export const delMyTemplate = (templateId: string) => {

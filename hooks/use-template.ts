@@ -1,5 +1,6 @@
 import { useEffect } from "react"
-import { appStore, settingsStore } from "@/store"
+import { settingsStore } from "@/store"
+import { appStore } from "@/store/model"
 import { ResumeSchema } from "@/types"
 import useSWR from "swr"
 import { useSnapshot } from "valtio"
@@ -35,11 +36,10 @@ const chineseify = (html: string) => {
   const replace = html.replace(/>([^<]+)</g, function (match, p1) {
     for (const key in mappingTypes) {
       if (mappingTypes.hasOwnProperty(key) && p1.toLowerCase().includes(key)) {
-        return (
-          ">" +
-          p1.replace(new RegExp(key, "gi"), mappingTypes[key] as string) +
-          "<"
-        )
+        return `>${p1.replace(
+          new RegExp(key, "gi"),
+          mappingTypes[key] as string
+        )}<`
       }
     }
     return match

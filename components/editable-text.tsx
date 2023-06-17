@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { appStore } from "@/store"
+import { appStore } from "@/store/model"
 import { get, set } from "lodash-es"
 import { useSnapshot } from "valtio"
 

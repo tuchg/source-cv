@@ -1,52 +1,18 @@
-import { DataManager } from "@/pages/data-manager"
-import ChatSection from "@/pages/editor/chat-section"
-import { CodeSection } from "@/pages/editor/code-section"
-import { DataSection } from "@/pages/editor/data-section"
-import GptSection from "@/pages/editor/gpt-section"
-import { Guide } from "@/pages/guide"
-import Home from "@/pages/home"
-import { MyResumes } from "@/pages/resumes"
-import { Templates } from "@/pages/templates"
-import { UserSpace } from "@/pages/user-space"
-import { Route, RouteObject, Routes } from "react-router"
+import Editor from "@/app/editor"
+import DataSection from "@/app/editor/data"
+import GptSection from "@/app/editor/guide"
+import Interview from "@/app/editor/interview"
+import NotFound from "@/app/not-found"
+import UserSpace from "@/app/space"
+import DataManager from "@/app/space/data"
+import MyResumes from "@/app/space/resume"
+import Templates from "@/app/space/template"
+import type { RouteObject } from "react-router"
 
-import { EditorLayout } from "@/components/editor/layout"
-
-export const routes: RouteObject[] = [
+const routes: RouteObject[] = [
   {
     path: "/",
-    element: <Home />,
-  },
-  {
-    path: "/editor",
-    element: <EditorLayout />,
-    children: [
-      {
-        index: true,
-        element: <DataSection />,
-      },
-      {
-        path: "source",
-        element: <CodeSection />,
-      },
-      {
-        path: "guide",
-        element: <GptSection />,
-      },
-      {
-        path: "interview",
-        element: <ChatSection />,
-      },
-      {
-        path: "templates",
-        element: <Templates />,
-      },
-      // {path: "*", element: <NoMatch/>},
-    ],
-  },
-  {
-    path: "/data",
-    element: <DataManager />,
+    element: <UserSpace />,
   },
   {
     path: "/space",
@@ -56,10 +22,6 @@ export const routes: RouteObject[] = [
       {
         path: "templates",
         element: <Templates />,
-        // children: [
-        //   {index: true, element: <CoursesIndex/>},
-        //   {path: "/courses/:id", element: <Course/>},
-        // ],
       },
       {
         path: "db",
@@ -69,7 +31,33 @@ export const routes: RouteObject[] = [
     ],
   },
   {
-    path: "/guide",
-    element: <Guide />,
+    path: "/editor",
+    element: <Editor />,
+    children: [
+      {
+        index: true,
+        element: <DataSection />,
+      },
+      {
+        path: "source",
+        element: <Templates />,
+      },
+      {
+        path: "guide",
+        element: <GptSection />,
+      },
+      {
+        path: "interview",
+        element: <Interview />,
+      },
+      {
+        path: "templates",
+        element: <Templates />,
+      },
+      // {path: "*", element: <NoMatch/>},
+    ],
   },
+  { path: "*", element: <NotFound /> },
 ]
+
+export default routes

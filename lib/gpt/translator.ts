@@ -7,7 +7,6 @@ import {
   SystemMessagePromptTemplate,
 } from "langchain/prompts"
 
-import { fixParser } from "@/lib/gpt/drafter"
 import { config } from "@/lib/gpt/index"
 
 export const translator = (

@@ -23,6 +23,7 @@ export type AppResumeSchema = IntoApplicationSchema<
     _extra: AppResumeDBMeta
   }
 }
+
 export type AppResumeDBMeta = {
   id: string
   title: string
@@ -33,6 +34,7 @@ export type AppResumeDBMeta = {
   create_at?: Date
   update_at?: Date
 }
+
 /**
  * Convert a schema to the corresponding schema that can be used in the application
  *

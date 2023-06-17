@@ -21,7 +21,6 @@ const model = new ChatOpenAI(
 )
 
 const memory = new BufferMemory({ returnMessages: true, memoryKey: "history" })
-export const chatHistory = memory.chatHistory.messages
 
 let chatChain: ConversationChain | null = null
 let chatPrompt = null
@@ -57,7 +56,6 @@ ${resume}
 }
 
 export const resp = async (text: string) => {
-  console.log(chatHistory)
   return await chatChain!.call({
     input: text,
   })
